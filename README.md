@@ -74,6 +74,28 @@ Override anything with `tests.command`, `tests.reports` (JUnit or TRX globs) and
 { "tests": { "command": "npx jest --ci --reporters=default --reporters=jest-junit", "reports": ["junit.xml"] } }
 ```
 
+## Goals
+
+Put a task list in `GOALS.md` (or set `goals.file`; `.git/stream-overlay/goals.md` keeps it private):
+
+```md
+# CSV export for orders
+
+- [x] Scope the feature
+- [ ] Export endpoint
+  - [x] Header row
+  - [ ] Quote fields with commas
+- [ ] Tests for edge cases
+
+## Stretch
+
+- [ ] Streaming for large exports
+```
+
+The first `#` heading becomes the title. Top-level items count toward progress, and a parent counts only when its own box is checked. Items under a `Stretch` heading are dimmed and don't affect the percentage. Checking an item on stream strikes it through and slides it out.
+
+`goals.source` can also be `"claude-todos"` (the coding agent's todo list), `"both"`, or `"off"`.
+
 ## License
 
 MIT

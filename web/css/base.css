@@ -326,3 +326,109 @@ so-tests .so-message {
     transform: translateX(8px);
   }
 }
+
+/* ---------- goals ---------- */
+
+.so-goals .so-head {
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+.so-goals .so-title {
+  font-size: 1.1em;
+}
+.so-goals .so-progress-text {
+  flex: none;
+}
+.so-goals .so-bar-fill {
+  background: var(--so-pass);
+}
+.so-list {
+  list-style: none;
+  margin: 0.4em 0 0;
+  padding: 0;
+}
+.so-goal {
+  position: relative;
+  padding: 0.15em 0 0.15em 1.5em;
+  font-size: 0.85em;
+  overflow: hidden;
+}
+.so-goal .so-check {
+  position: absolute;
+  left: 0;
+  top: 0.4em;
+  width: 0.85em;
+  height: 0.85em;
+  border: 2px solid var(--so-muted);
+  border-radius: 3px;
+}
+.so-goal.so-done > .so-check {
+  border-color: var(--so-pass);
+  background: var(--so-pass);
+}
+.so-goal.so-done > .so-text,
+.so-children .so-done {
+  text-decoration: line-through;
+  color: var(--so-muted);
+}
+.so-goal.so-current > .so-text {
+  color: var(--so-accent);
+  font-weight: 700;
+}
+.so-goal.so-current > .so-check {
+  border-color: var(--so-accent);
+}
+.so-goal.so-stretch {
+  opacity: 0.55;
+}
+.so-tag {
+  margin-left: 0.5em;
+  font-size: 0.75em;
+  color: var(--so-muted);
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  padding: 0 0.3em;
+}
+.so-children {
+  list-style: none;
+  padding: 0;
+  margin: 0.1em 0 0;
+}
+.so-children .so-goal {
+  font-size: 0.85em;
+  color: var(--so-muted);
+}
+.so-goal.so-leaving {
+  animation: so-leave 2.6s ease forwards;
+}
+.so-goal.so-leaving > .so-text {
+  animation: so-strike 0.4s ease forwards;
+}
+.so-all-done {
+  color: var(--so-pass);
+  padding-left: 0;
+}
+
+@keyframes so-strike {
+  from {
+    text-decoration-color: transparent;
+  }
+  to {
+    text-decoration: line-through;
+    text-decoration-color: currentColor;
+  }
+}
+@keyframes so-leave {
+  0%,
+  75% {
+    transform: none;
+    opacity: 1;
+    max-height: 4em;
+  }
+  100% {
+    transform: translateX(110%);
+    opacity: 0;
+    max-height: 0;
+    padding: 0;
+  }
+}

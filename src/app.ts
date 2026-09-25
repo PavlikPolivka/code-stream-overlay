@@ -14,6 +14,7 @@ import { createPrivacy, type Privacy } from "./privacy.js";
 import { ADAPTERS, detectStacks, type StackAdapter } from "./collectors/tests/adapters/index.js";
 import { TestsCollector, resolvePlan } from "./collectors/tests/collector.js";
 import { CliError } from "./util/errors.js";
+import { GoalsCollector } from "./collectors/goals.js";
 import { startServer, type RunningServer } from "./server/http.js";
 import type { Api } from "./server/routes.js";
 import { newToken } from "./server/auth.js";
@@ -113,7 +114,8 @@ export async function createApp(repo: RepoPaths, config: Config): Promise<App> {
   const tests = plan
     ? new TestsCollector(store, bus, { root: repo.root, plan, privacy, since: session.startedAt })
     : undefined;
-  const collectors: Collector[] = [timer, files, gitCollector, ...(tests ? [tests] : [])];
+  const goals = config.goals.source === "off" ? undefined : new GoalsCollector(store, bus, { root: repo.root, goals: config.goals });
+  const collectors: Collector[] = [timer, files, gitCollector, ...(tests ? [tests] : []), ...(goals ? [goals] : [])];
 
   const api: Api = {
     session: (action) => timer.action(action),

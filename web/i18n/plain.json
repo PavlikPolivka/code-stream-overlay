@@ -22,5 +22,10 @@
   "tests.waiting": "Waiting for a run",
   "tests.counts": "{passed}/{total}",
   "tests.noCounts": "exit code only",
-  "tests.skipped": "{n} skipped"
+  "tests.skipped": "{n} skipped",
+  "goals.title": "Goals",
+  "goals.done": "{done}/{total} done",
+  "goals.allDone": "All goals done",
+  "goals.stretch": "stretch",
+  "goals.agentTodos": "Agent todos"
 }

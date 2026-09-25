@@ -34,3 +34,10 @@ One line per decision where the design doc was ambiguous or deviated from.
 - tests-green / tests-red compare against the last settled status (the transient `running` is ignored).
 - Manual runs (`POST /api/tests/run`, `stream-overlay test`) work in every trigger mode, passive included.
 - Fixtures come from real tool runs (Maven 3.9 + JUnit 5, Gradle, pytest, vitest, jest-junit, cargo-nextest, dotnet 10 + xUnit, go 1.27), scrubbed of local paths, hostnames and surefire `<properties>`.
+- A goals heading counts as stretch when its text starts with `goals.stretchHeading` (case-insensitive, any level). Stretch lasts until the next heading of the same or higher level.
+- Task lines inside code fences are ignored; plain bullets (without a checkbox) are not goals.
+- Inline Markdown (links, emphasis, code ticks) is stripped from goal texts; snake_case stays intact.
+- goal-done fires for any newly checked item, nested ones included. Items added already checked don't fire.
+- The goals widget lists open items only: a checked item strikes through, slides out after 2 s, and leaves the progress bar as the record.
+- With `goals.source: "claude-todos"`, done/total come from the todos; with `both`, they come from the file and todos show as a sub-list.
+- The goals file is read up to 256 KB and watched through its directory, so it can be created or replaced later.

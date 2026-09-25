@@ -1,0 +1,8 @@
+{
+  "timer.overtime": "Overtime",
+  "timer.elapsed": "Elapsed",
+  "timer.total": "{time} total",
+  "time.seconds": "{n}s ago",
+  "time.minutes": "{n}m ago",
+  "time.hours": "{n}h ago"
+}

@@ -1,0 +1,36 @@
+{
+  "name": "stream-overlay",
+  "version": "0.1.0",
+  "description": "Live, repo-aware overlays for OBS: git, tests, goals, timer and coding-agent activity.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "stream-overlay": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "web",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "tsc --noEmit",
+    "test": "vitest run",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "chokidar": "^4.0.3",
+    "fast-xml-parser": "^5.2.5",
+    "tinyglobby": "^0.2.14",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}

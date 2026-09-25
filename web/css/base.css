@@ -1,0 +1,214 @@
+/* Design tokens. Themes override these (and may add rules). */
+:root {
+  --so-font: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --so-fg: #e6edf3;
+  --so-muted: #8b949e;
+  --so-bg: rgba(13, 17, 23, 0.82);
+  --so-accent: #58a6ff;
+  --so-pass: #3fb950;
+  --so-fail: #f85149;
+  --so-warn: #d29922;
+  --so-radius: 10px;
+  --so-gap: 12px;
+  --so-pad: 14px 18px;
+  --so-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+  --so-border: 1px solid rgba(240, 246, 252, 0.1);
+  --so-text-shadow: none;
+  --so-scale: 1;
+  --so-size: 18px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: transparent;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--so-font);
+  font-size: calc(var(--so-size) * var(--so-scale));
+  color: var(--so-fg);
+  text-shadow: var(--so-text-shadow);
+  -webkit-font-smoothing: antialiased;
+}
+
+html[data-bg="solid"] body {
+  background: #0d1117;
+}
+
+html.so-offline .so-widget {
+  opacity: 0.4;
+  transition: opacity 0.6s;
+}
+
+/* ---------- widget shell ---------- */
+
+.so-widget {
+  display: block;
+  position: relative;
+  background: var(--so-bg);
+  border: var(--so-border);
+  border-radius: var(--so-radius);
+  box-shadow: var(--so-shadow);
+  padding: var(--so-pad);
+  line-height: 1.3;
+  transition: opacity 0.4s;
+}
+
+.so-widget.so-empty {
+  display: none;
+}
+
+html[data-align="center"] .so-widget {
+  text-align: center;
+}
+html[data-align="right"] .so-widget {
+  text-align: right;
+}
+
+.so-single #so-root {
+  padding: 8px;
+}
+
+.so-label {
+  color: var(--so-muted);
+  font-size: 0.72em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.so-title {
+  font-weight: 700;
+  font-size: 1.35em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.so-subtitle,
+.so-sub {
+  color: var(--so-muted);
+  font-size: 0.8em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.so-value {
+  font-weight: 700;
+  font-size: 1.6em;
+  font-variant-numeric: tabular-nums;
+}
+
+.so-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  flex-wrap: wrap;
+}
+
+.so-badge {
+  display: inline-block;
+  padding: 0.1em 0.55em;
+  border-radius: calc(var(--so-radius) / 2);
+  font-weight: 700;
+  font-size: 0.8em;
+  letter-spacing: 0.05em;
+  background: var(--so-muted);
+  color: #0d1117;
+  text-shadow: none;
+}
+
+.so-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(139, 148, 158, 0.25);
+  overflow: hidden;
+  margin: 0.4em 0 0.3em;
+}
+.so-bar-fill {
+  height: 100%;
+  width: 0;
+  background: var(--so-accent);
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+.so-add {
+  color: var(--so-pass);
+}
+.so-del {
+  color: var(--so-fail);
+}
+
+.so-error {
+  color: var(--so-warn);
+  font-size: 0.75em;
+}
+
+/* hide=<part> URL param hides sub-elements with class so-<part> */
+.so-hide-message .so-message,
+.so-hide-subtitle .so-subtitle,
+.so-hide-elapsed .so-elapsed,
+.so-hide-bar .so-bar,
+.so-hide-counts .so-counts,
+.so-hide-stack .so-stack,
+.so-hide-files .so-files,
+.so-hide-branch .so-branch,
+.so-hide-list .so-list,
+.so-hide-duration .so-duration,
+.so-hide-label .so-label {
+  display: none !important;
+}
+
+/* ---------- timer ---------- */
+
+so-timer[data-status="paused"] .so-clock {
+  animation: so-blink 1s steps(2, start) infinite;
+}
+so-timer[data-status="overtime"] .so-clock {
+  color: var(--so-accent);
+}
+so-timer[data-status="stopped"] .so-clock {
+  color: var(--so-muted);
+}
+
+.so-phase-announce {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 2em;
+  font-weight: 700;
+  background: var(--so-bg);
+  border-radius: var(--so-radius);
+  animation: so-announce 3s ease forwards;
+}
+
+@keyframes so-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+@keyframes so-announce {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  10%,
+  80% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+  }
+}

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>stream-overlay widget</title>
+    <link rel="stylesheet" href="/static/css/base.css" />
+    <link id="so-theme" rel="stylesheet" href="/themes/terminal.css" />
+  </head>
+  <body class="so-single">
+    <main id="so-root"></main>
+    <script type="module">
+      import "/static/js/core.js";
+      const name = location.pathname.split("/").filter(Boolean)[1];
+      if (/^[a-z]+$/.test(name)) {
+        await import(`/static/js/widgets/so-${name}.js`);
+        document.getElementById("so-root").append(document.createElement(`so-${name}`));
+      }
+    </script>
+  </body>
+</html>

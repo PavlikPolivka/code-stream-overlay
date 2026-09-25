@@ -1,0 +1,4 @@
+/* terminal: dark panels, monospace (the default tokens in base.css). */
+:root {
+  --so-font: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}

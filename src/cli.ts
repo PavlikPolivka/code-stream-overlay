@@ -85,6 +85,11 @@ export async function main(argv: string[]): Promise<number> {
       else throw new CliError(`usage: ${PKG_NAME} hooks install|uninstall`);
       return 0;
     }
+    case "obs": {
+      const { obs } = await import("./commands/obs.js");
+      await obs(sub, flags);
+      return 0;
+    }
     case "test": {
       const { callServer, repoOrExit } = await import("./commands/common.js");
       await callServer(await repoOrExit(), "POST", "/api/tests/run");

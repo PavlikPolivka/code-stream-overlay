@@ -118,6 +118,27 @@ curl -X POST http://127.0.0.1:4747/api/agent -H "Authorization: Bearer $TOKEN" \
 
 Event types: `action` (`text`, `tool`), `thinking`, `waiting`, `done`, `todos` (`[{ "content": "...", "status": "in_progress" }]`). The token is in `.git/stream-overlay/server.json`.
 
+## OBS
+
+### Automatic
+
+OBS 28+ ships obs-websocket. Enable it under **Tools → WebSocket Server Settings**, then:
+
+```sh
+stream-overlay obs install              # one browser source per widget, in the current scene
+stream-overlay obs install --single     # one full-canvas source for the composed layout
+stream-overlay obs install --scene Coding
+stream-overlay obs uninstall            # removes exactly the sources it created
+```
+
+Sources are named `so · <widget>` and positioned by their layout slot, scaled to your canvas. Running install again updates them without creating duplicates. The password is taken from `--obs-password`, then `STREAM_OVERLAY_OBS_PASSWORD`, then `obs.password` in `.git/stream-overlay/config.json`, and otherwise you're prompted.
+
+Add the control page as a dock by hand: **View → Docks → Custom Browser Docks** → `http://127.0.0.1:4747/control`.
+
+### Manual
+
+**Sources → + → Browser**, paste a URL from the start banner, and use the width and height from the table under *Look and feel*. Browser sources are transparent by default. Leave "Shutdown source when not visible" off so animations and reconnects keep working.
+
 ## Look and feel
 
 **Layout.** `/` is a 1920×1080 stage scaled to the source size. Widgets sit in slots, and widgets that share a slot stack:

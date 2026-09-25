@@ -57,3 +57,10 @@ One line per decision where the design doc was ambiguous or deviated from.
 - The minimal theme uses outlined text (`-webkit-text-stroke` + `paint-order`) on top of the heavy shadow, since a shadow alone wasn't readable over busy code.
 - Displayed text replaces the repo root with `.` and the home directory (and the bare user name, e.g. in temp paths) with `~`, found when the live agent widget showed a scratchpad path.
 - The `confetti=0` URL param disables confetti for one source.
+- OBS sources are sized at the 1920×1080 design size and scaled by the scene-item transform (`scaleX/Y` = canvas / 1920×1080), so widgets render crisp and keep their proportions on any canvas.
+- `computeLayout` in src/obs/install.ts mirrors the slot rules of web/js/layout.js; tests pin the coordinates.
+- `obs.json` keeps the union of source names from every install, so uninstall removes sources added to several scenes or under an earlier widget list.
+- GetCurrentProgramScene accepts both `sceneName` (5.3+) and `currentProgramSceneName`.
+- The OBS password prompt only appears when OBS asks for authentication and stdin is a TTY; otherwise the error names `--obs-password` and the env var.
+- `obs install` targets the running server's port from server.json, or the configured port with a warning when no server runs.
+- `obs export` (stretch) is not implemented in v0.1.

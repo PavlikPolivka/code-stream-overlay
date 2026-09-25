@@ -4,5 +4,10 @@
   "timer.total": "{time} total",
   "time.seconds": "{n}s ago",
   "time.minutes": "{n}m ago",
-  "time.hours": "{n}h ago"
+  "time.hours": "{n}h ago",
+  "git.branch": "Branch",
+  "git.files": "{n} files changed",
+  "git.lastCommit": "last commit {ago}",
+  "git.noCommits": "no commits this session",
+  "file.editing": "Editing"
 }

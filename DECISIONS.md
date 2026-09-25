@@ -15,3 +15,11 @@ One line per decision where the design doc was ambiguous or deviated from.
 - `/api/health` also returns `pid`, so the CLI can tell a stale `server.json` from a live server.
 - `start` opens the layout in the default browser only when stdout is a TTY and not in CI; `--no-open` disables it.
 - The Host check also accepts `[::1]:<port>`.
+- The file watcher always skips `.git/` and `node_modules/`, plus the directories git reported as ignored at start (`ls-files -o -i --directory`). Paths ignored later are filtered through a cached `git check-ignore --stdin`.
+- Untracked files count toward `git.filesChanged` as well as `git.untracked` and `git.added`.
+- The diff uses `--no-renames`, so a rename counts as a delete plus an add.
+- Commit subjects pass through the same redaction as commands and are truncated to 120 characters.
+- Privacy globs use a small built-in gitignore-style matcher (no new dependency). A pattern without `/` matches at any depth.
+- Paths are not text-redacted (only hidden or shortened). The token rule requires 24+ chars mixing letters and digits, plus known prefixes (ghp_, sk-, xox*-, AKIA), so long identifiers survive.
+- Hidden files (privacy.ignore) show as "a hidden file" in `activity.currentFile` and are never added to `activity.recent`.
+- The `now` title falls back in the browser: config title → goals H1 → branch → repo name.

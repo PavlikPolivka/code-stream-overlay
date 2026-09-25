@@ -35,6 +35,16 @@ The `timer` widget counts down the current phase. Presets (`session.preset`):
 Past the last phase the timer counts up in overtime. Custom phases:
 `{ "session": { "phases": [{ "name": "Build", "minutes": 45 }] } }`.
 
+## Repo awareness
+
+- **now**: title (config `title`, else the GOALS.md heading, else the branch, else the repo name), subtitle and detected stack.
+- **git**: branch, lines added and removed, and files changed since the session started. Commits, staged, unstaged and untracked changes all count, so committing never resets the numbers.
+- **file**: the file you're editing and how long ago.
+
+### Privacy
+
+Everything shown on stream passes through one filter. Files that match `privacy.ignore` (default `.env*`, `**/secrets/**`, `*.pem`, `*.key`, `id_*`) show as "a hidden file", and their contents are never read. `privacy.redactPaths: true` shows basenames only, and `privacy.hideFileNames: true` hides every name. Commands and messages are scrubbed of passwords, tokens, `SECRET=`-style assignments, `Authorization:` headers and long key-like strings.
+
 ## License
 
 MIT

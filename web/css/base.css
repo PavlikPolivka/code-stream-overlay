@@ -212,3 +212,21 @@ so-timer[data-status="stopped"] .so-clock {
     opacity: 0;
   }
 }
+
+/* ---------- git / file / now ---------- */
+
+.so-git .so-branch {
+  color: var(--so-accent);
+  font-weight: 600;
+}
+.so-git .so-value {
+  gap: 0.8em;
+}
+.so-file .so-path {
+  font-size: 1.05em;
+  direction: rtl; /* keep the end of long paths visible */
+  text-align: left;
+}
+.so-now .so-stack {
+  background: var(--so-accent);
+}

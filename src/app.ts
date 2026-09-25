@@ -8,6 +8,9 @@ import { Store } from "./state/store.js";
 import type { State } from "./state/types.js";
 import { TimerCollector, phasesFor } from "./collectors/timer.js";
 import type { Collector } from "./collectors/types.js";
+import { FilesCollector } from "./collectors/files.js";
+import { GitCollector } from "./collectors/git.js";
+import { createPrivacy, type Privacy } from "./privacy.js";
 import { startServer, type RunningServer } from "./server/http.js";
 import type { Api } from "./server/routes.js";
 import { newToken } from "./server/auth.js";
@@ -30,6 +33,8 @@ export interface App {
   config: Config;
   repo: RepoPaths;
   timer: TimerCollector;
+  git: GitCollector;
+  privacy: Privacy;
   collectors: Collector[];
   stop(): Promise<void>;
 }
@@ -79,7 +84,10 @@ export async function createApp(repo: RepoPaths, config: Config): Promise<App> {
   const store = new Store(initialState(config, repoName, session));
   const bus = new Bus();
   const timer = new TimerCollector(store, { phases, autoStart: config.session.autoStart });
-  const collectors: Collector[] = [timer];
+  const privacy = createPrivacy(config.privacy);
+  const files = new FilesCollector(store, bus, { root: repo.root, ignoreDirs: [], privacy });
+  const gitCollector = new GitCollector(store, bus, { root: repo.root, gitDir: repo.gitDir, privacy });
+  const collectors: Collector[] = [timer, files, gitCollector];
 
   const api: Api = {
     session: (action) => timer.action(action),
@@ -129,6 +137,8 @@ export async function createApp(repo: RepoPaths, config: Config): Promise<App> {
     config,
     repo,
     timer,
+    git: gitCollector,
+    privacy,
     collectors,
     async stop() {
       if (stopped) return;

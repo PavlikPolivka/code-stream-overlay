@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="shop.api.RouteTest" tests="2" skipped="1" failures="0" errors="0" timestamp="2026-09-25T19:26:59.737Z" hostname="build-host" time="0.018">
+  <properties/>
+  <testcase name="listsOrders()" classname="shop.api.RouteTest" time="0.008"/>
+  <testcase name="paginates()" classname="shop.api.RouteTest" time="0.0">
+    <skipped/>
+  </testcase>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

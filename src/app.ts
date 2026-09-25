@@ -11,6 +11,9 @@ import type { Collector } from "./collectors/types.js";
 import { FilesCollector } from "./collectors/files.js";
 import { GitCollector } from "./collectors/git.js";
 import { createPrivacy, type Privacy } from "./privacy.js";
+import { ADAPTERS, detectStacks, type StackAdapter } from "./collectors/tests/adapters/index.js";
+import { TestsCollector, resolvePlan } from "./collectors/tests/collector.js";
+import { CliError } from "./util/errors.js";
 import { startServer, type RunningServer } from "./server/http.js";
 import type { Api } from "./server/routes.js";
 import { newToken } from "./server/auth.js";
@@ -34,6 +37,7 @@ export interface App {
   repo: RepoPaths;
   timer: TimerCollector;
   git: GitCollector;
+  tests?: TestsCollector;
   privacy: Privacy;
   collectors: Collector[];
   stop(): Promise<void>;
@@ -72,6 +76,14 @@ export async function headSha(root: string): Promise<string | undefined> {
   }
 }
 
+function pickAdapter(setting: string, stacks: StackAdapter[]): StackAdapter | undefined {
+  if (setting === "auto") return stacks[0];
+  if (setting === "off") return undefined;
+  const a = ADAPTERS.find((x) => x.id === setting);
+  if (!a) throw new CliError(`tests.adapter "${setting}" is not one of: auto, off, ${ADAPTERS.map((x) => x.id).join(", ")}`);
+  return a;
+}
+
 export function serverJsonPath(repo: RepoPaths): string {
   return path.join(repo.stateDir, "server.json");
 }
@@ -85,12 +97,27 @@ export async function createApp(repo: RepoPaths, config: Config): Promise<App> {
   const bus = new Bus();
   const timer = new TimerCollector(store, { phases, autoStart: config.session.autoStart });
   const privacy = createPrivacy(config.privacy);
-  const files = new FilesCollector(store, bus, { root: repo.root, ignoreDirs: [], privacy });
+
+  const stacks = await detectStacks(repo.root);
+  const adapter = pickAdapter(config.tests.adapter, stacks);
+  const plan =
+    config.tests.adapter === "off"
+      ? undefined
+      : resolvePlan(adapter, config.tests, { root: repo.root, stateDir: repo.stateDir, platform: process.platform });
+  store.update("project", (p) => ({ ...p, stacks: stacks.map((s) => s.label) }));
+  if (plan) store.update("tests", (t) => ({ ...t, adapter: plan.adapter, mode: plan.mode }));
+
+  const ignoreDirs = [...new Set(stacks.flatMap((s) => s.ignore))];
+  const files = new FilesCollector(store, bus, { root: repo.root, ignoreDirs, privacy });
   const gitCollector = new GitCollector(store, bus, { root: repo.root, gitDir: repo.gitDir, privacy });
-  const collectors: Collector[] = [timer, files, gitCollector];
+  const tests = plan
+    ? new TestsCollector(store, bus, { root: repo.root, plan, privacy, since: session.startedAt })
+    : undefined;
+  const collectors: Collector[] = [timer, files, gitCollector, ...(tests ? [tests] : [])];
 
   const api: Api = {
     session: (action) => timer.action(action),
+    runTests: tests ? () => tests.run() : undefined,
     setState: (key, value) => {
       if (key === "title" || key === "subtitle") {
         store.update("project", (p) => ({ ...p, [key]: value === null ? undefined : String(value) }));
@@ -138,6 +165,7 @@ export async function createApp(repo: RepoPaths, config: Config): Promise<App> {
     repo,
     timer,
     git: gitCollector,
+    tests,
     privacy,
     collectors,
     async stop() {

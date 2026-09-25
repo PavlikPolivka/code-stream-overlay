@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="demo.OrderTest" time="0.028" tests="3" errors="0" skipped="1" failures="0">
+  <testcase name="totalZero" classname="demo.OrderTest" time="0.014"/>
+  <testcase name="discounts" classname="demo.OrderTest" time="0.0">
+    <skipped message="not yet"/>
+  </testcase>
+  <testcase name="totalMultiplies" classname="demo.OrderTest" time="0.001"/>
+</testsuite>

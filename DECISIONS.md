@@ -23,3 +23,14 @@ One line per decision where the design doc was ambiguous or deviated from.
 - Paths are not text-redacted (only hidden or shortened). The token rule requires 24+ chars mixing letters and digits, plus known prefixes (ghp_, sk-, xox*-, AKIA), so long identifiers survive.
 - Hidden files (privacy.ignore) show as "a hidden file" in `activity.currentFile` and are never added to `activity.recent`.
 - The `now` title falls back in the browser: config title → goals H1 → branch → repo name.
+- Adapter `command`, `reports` and `parser` take a context (root, stateDir, platform) instead of being constants, because python/dotnet write into the real git dir and rust depends on the nextest config.
+- A node adapter with `tests.reports` configured switches to the junit parser (trx if the glob ends in .trx).
+- go-json counts leaf tests only; a parent test whose subtests ran is not counted separately.
+- go-json reads `build-output` events, so a compile error becomes the first failure with file and message.
+- TRX skipped = max(notExecuted, total − executed), because xUnit leaves notExecuted at 0.
+- A run whose reports show no failures but whose command exited non-zero counts as `fail`; the first failure is "exit code N" plus the last error-looking output line.
+- Reports count as fresh with a 2 s mtime slack, for filesystems with coarse timestamps.
+- The passive report watcher uses a segment glob matcher where `**` never descends into adapter ignore dirs, so it enters `target/surefire-reports` but not the rest of `target/`.
+- tests-green / tests-red compare against the last settled status (the transient `running` is ignored).
+- Manual runs (`POST /api/tests/run`, `stream-overlay test`) work in every trigger mode, passive included.
+- Fixtures come from real tool runs (Maven 3.9 + JUnit 5, Gradle, pytest, vitest, jest-junit, cargo-nextest, dotnet 10 + xUnit, go 1.27), scrubbed of local paths, hostnames and surefire `<properties>`.

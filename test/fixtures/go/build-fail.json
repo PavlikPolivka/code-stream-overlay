@@ -1,0 +1,6 @@
+{"ImportPath":"example.com/shop/orders [example.com/shop/orders.test]","Action":"build-output","Output":"# example.com/shop/orders [example.com/shop/orders.test]\n"}
+{"ImportPath":"example.com/shop/orders [example.com/shop/orders.test]","Action":"build-output","Output":"orders/order.go:4:14: syntax error: unexpected {, expected )\n"}
+{"ImportPath":"example.com/shop/orders [example.com/shop/orders.test]","Action":"build-fail"}
+{"Time":"2026-09-25T21:25:00.880847+02:00","Action":"start","Package":"example.com/shop/orders"}
+{"Time":"2026-09-25T21:25:00.880903+02:00","Action":"output","Package":"example.com/shop/orders","Output":"FAIL\texample.com/shop/orders [build failed]\n","OutputType":"frame"}
+{"Time":"2026-09-25T21:25:00.880916+02:00","Action":"fail","Package":"example.com/shop/orders","Elapsed":0,"FailedBuild":"example.com/shop/orders [example.com/shop/orders.test]"}

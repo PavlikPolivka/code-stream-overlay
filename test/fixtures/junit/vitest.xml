@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="4" failures="1" errors="0" time="0.006434625">
+    <testsuite name="src/cart.test.js" timestamp="2026-09-25T19:23:38.114Z" hostname="build-host" tests="3" failures="1" errors="0" skipped="1" time="0.005408834">
+        <testcase classname="src/cart.test.js" name="cart &gt; adds items" time="0.000651459">
+        </testcase>
+        <testcase classname="src/cart.test.js" name="cart &gt; applies coupon" time="0.004218916">
+            <failure message="expected { total: 90 } to deeply equal { total: 100 }" type="AssertionError">
+AssertionError: expected { total: 90 } to deeply equal { total: 100 }
+
+- Expected
++ Received
+
+  {
+-   &quot;total&quot;: 100,
++   &quot;total&quot;: 90,
+  }
+
+ ❯ src/cart.test.js:4:52
+            </failure>
+        </testcase>
+        <testcase classname="src/cart.test.js" name="cart &gt; handles currency" time="0">
+            <skipped/>
+        </testcase>
+    </testsuite>
+    <testsuite name="src/util.test.js" timestamp="2026-09-25T19:23:38.116Z" hostname="build-host" tests="1" failures="0" errors="0" skipped="0" time="0.001025791">
+        <testcase classname="src/util.test.js" name="slugifies" time="0.000611875">
+        </testcase>
+    </testsuite>
+</testsuites>

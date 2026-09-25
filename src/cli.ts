@@ -69,6 +69,12 @@ export async function main(argv: string[]): Promise<number> {
       await start(flags);
       return 0;
     }
+    case "test": {
+      const { callServer, repoOrExit } = await import("./commands/common.js");
+      await callServer(await repoOrExit(), "POST", "/api/tests/run");
+      log.info("test run requested");
+      return 0;
+    }
     default:
       throw new CliError(`unknown command "${cmd}"${sub ? ` ${sub}` : ""}\n\n${HELP}`);
   }

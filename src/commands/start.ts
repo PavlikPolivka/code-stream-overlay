@@ -10,7 +10,7 @@ export function banner(app: App): string {
   const host = app.config.host === "0.0.0.0" || app.config.host === "::" ? "127.0.0.1" : app.config.host;
   const base = `http://${host.includes(":") ? `[${host}]` : host}:${app.info.port}`;
   const q = isLoopback(app.config.host) ? "" : `?token=${app.info.token}`;
-  const stack = s.project.stacks.length ? `${s.project.stacks[0]}${s.tests.adapter ? ` (${s.tests.mode})` : ""}` : "no test stack";
+  const stack = s.tests.adapter ? `${s.tests.adapter} (${s.tests.mode})` : s.project.stacks[0] ?? "no test stack";
   return [
     `${PKG_NAME} · ${s.project.name} · ${stack}`,
     `  Layout   ${base}/${q}`,

@@ -45,6 +45,35 @@ Past the last phase the timer counts up in overtime. Custom phases:
 
 Everything shown on stream passes through one filter. Files that match `privacy.ignore` (default `.env*`, `**/secrets/**`, `*.pem`, `*.key`, `id_*`) show as "a hidden file", and their contents are never read. `privacy.redactPaths: true` shows basenames only, and `privacy.hideFileNames: true` hides every name. Commands and messages are scrubbed of passwords, tokens, `SECRET=`-style assignments, `Authorization:` headers and long key-like strings.
 
+## Tests
+
+Tests are detected from your repo. The first match wins unless `tests.adapter` pins one (`"off"` disables tests).
+
+| Stack  | Detected by                                        | Command                                      | Default mode |
+|--------|----------------------------------------------------|----------------------------------------------|--------------|
+| maven  | `pom.xml`                                          | `./mvnw -q test` or `mvn -q test`            | passive      |
+| gradle | `build.gradle(.kts)`, `settings.gradle(.kts)`      | `./gradlew test` or `gradle test`            | passive      |
+| node   | `package.json` with a `test` script                | `npm test` (pnpm / yarn / bun by lockfile)   | save         |
+| python | `pyproject.toml`, `pytest.ini`, `setup.cfg`, `tox.ini` | `pytest -q --junitxml=.git/stream-overlay/pytest.xml` | save |
+| go     | `go.mod`                                           | `go test -json ./...`                        | save         |
+| rust   | `Cargo.toml`                                       | `cargo nextest run` if installed, else `cargo test` | save  |
+| dotnet | `*.sln`, `*.csproj`, `*.fsproj`                    | `dotnet test --logger trx …`                 | commit       |
+| make   | `Makefile` with a `test:` target                   | `make test`                                  | manual       |
+
+Trigger modes (`tests.mode` or `--tests-mode`):
+
+- **passive**: never runs anything. It watches report files and shows the results of whatever ran the tests: you, your IDE, or your agent. Recommended whenever an agent runs tests itself, because two concurrent builds fight over `target/` or `build/`.
+- **save**: runs after you save a file (debounced; one follow-up run is queued at most).
+- **commit**: runs after each commit.
+- **interval**: runs every `tests.intervalSec` seconds (min 30).
+- **manual**: runs on `stream-overlay test` or `POST /api/tests/run`.
+
+Override anything with `tests.command`, `tests.reports` (JUnit or TRX globs) and `tests.timeoutSec`. For example, jest with jest-junit:
+
+```json
+{ "tests": { "command": "npx jest --ci --reporters=default --reporters=jest-junit", "reports": ["junit.xml"] } }
+```
+
 ## License
 
 MIT

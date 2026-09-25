@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="nextest-run" tests="2" skipped="0" failures="1" errors="0" uuid="a3096200-2b85-424e-945c-ca6bb102d67f" timestamp="2026-09-25T21:27:19.647+02:00" time="0.022">
+    <testsuite name="rustdemo" tests="2" skipped="0" errors="0" failures="1">
+        <testcase name="tests::multiplies" classname="rustdemo" timestamp="2026-09-25T21:27:19.648+02:00" time="0.019"/>
+        <testcase name="tests::zero_qty" classname="rustdemo" timestamp="2026-09-25T21:27:19.648+02:00" time="0.019">
+            <failure message="thread &apos;tests::zero_qty&apos; (384752) panicked at src/lib.rs:9:21" type="test failure with exit code 101">thread &apos;tests::zero_qty&apos; (384752) panicked at src/lib.rs:9:21:
+assertion `left == right` failed: zero quantity
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace</failure>
+            <system-out>
+running 1 test
+test tests::zero_qty ... FAILED
+
+failures:
+
+failures:
+    tests::zero_qty
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+</system-out>
+            <system-err>
+thread &apos;tests::zero_qty&apos; (384752) panicked at src/lib.rs:9:21:
+assertion `left == right` failed: zero quantity
+  left: 0
+ right: 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</system-err>
+        </testcase>
+    </testsuite>
+</testsuites>

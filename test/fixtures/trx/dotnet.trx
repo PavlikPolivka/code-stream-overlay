@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="3ccd601b-89bf-48f0-9db8-fe5742d90c45" name="@build-host 2026-09-25 21:27:14" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-09-25T21:27:14.7665800+02:00" queuing="2026-09-25T21:27:14.7665800+02:00" start="2026-09-25T21:27:14.3378680+02:00" finish="2026-09-25T21:27:14.7692270+02:00" />
+  <TestSettings name="default" id="2c77b8bc-1e53-4a5a-99ec-8903c3b06f40">
+    <Deployment runDeploymentRoot="_build-host_2026-09-25_21_27_14" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="e8876046-1ef6-4fcd-a674-795f6268f0a3" testId="02b2d8c7-abe5-5f60-acbc-ce36ee718d79" testName="Shop.Tests.CartTests.PositiveQuantities(q: 1)" computerName="build-host" duration="00:00:00.0000827" startTime="2026-09-25T21:27:14.6982820+02:00" endTime="2026-09-25T21:27:14.6983280+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e8876046-1ef6-4fcd-a674-795f6268f0a3" />
+    <UnitTestResult executionId="32f02d79-3077-47d8-bca0-3127618f3802" testId="23880da9-762b-4fcc-9956-7373b0958ffa" testName="Shop.Tests.CartTests.AppliesCoupon" computerName="build-host" duration="00:00:00.0028485" startTime="2026-09-25T21:27:14.6988860+02:00" endTime="2026-09-25T21:27:14.7011010+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="32f02d79-3077-47d8-bca0-3127618f3802">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 100
+Actual:   90</Message>
+          <StackTrace>   at Shop.Tests.CartTests.AppliesCoupon() in /work/dotnet/Shop.Tests/UnitTest1.cs:line 9
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5f90a855-b25e-4f59-b2da-33a26c8097d7" testId="7f20f454-3571-6b87-f3f7-efbbfa9714bd" testName="Shop.Tests.CartTests.HandlesCurrency" computerName="build-host" duration="00:00:00.0010000" startTime="2026-09-25T21:27:14.7036640+02:00" endTime="2026-09-25T21:27:14.7038000+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5f90a855-b25e-4f59-b2da-33a26c8097d7">
+      <Output>
+        <ErrorInfo>
+          <Message>later</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d037548b-2db4-4d2b-a262-66c9ef1c003d" testId="910586ba-37ce-e898-2778-e4b160d7e5a7" testName="Shop.Tests.CartTests.PositiveQuantities(q: 2)" computerName="build-host" duration="00:00:00.0034726" startTime="2026-09-25T21:27:14.6873300+02:00" endTime="2026-09-25T21:27:14.6938350+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d037548b-2db4-4d2b-a262-66c9ef1c003d" />
+    <UnitTestResult executionId="d9ec2cdf-9809-4ded-8927-36bbeb5812d6" testId="cafc2db8-a9fe-253c-95f8-bd808a950a55" testName="Shop.Tests.CartTests.AddsItems" computerName="build-host" duration="00:00:00.0000420" startTime="2026-09-25T21:27:14.7035710+02:00" endTime="2026-09-25T21:27:14.7035990+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d9ec2cdf-9809-4ded-8927-36bbeb5812d6" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Shop.Tests.CartTests.AddsItems" storage="/private/tmp/claude-501/-users-dev-ideaprojects-stream-overlay/4fa45f58-18ec-4902-87a2-dba40b025660/scratchpad/fx/dotnet/shop.tests/bin/debug/net10.0/shop.tests.dll" id="cafc2db8-a9fe-253c-95f8-bd808a950a55">
+      <Execution id="d9ec2cdf-9809-4ded-8927-36bbeb5812d6" />
+      <TestMethod codeBase="/work/dotnet/Shop.Tests/bin/Debug/net10.0/Shop.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Shop.Tests.CartTests" name="AddsItems" />
+    </UnitTest>
+    <UnitTest name="Shop.Tests.CartTests.PositiveQuantities(q: 1)" storage="/private/tmp/claude-501/-users-dev-ideaprojects-stream-overlay/4fa45f58-18ec-4902-87a2-dba40b025660/scratchpad/fx/dotnet/shop.tests/bin/debug/net10.0/shop.tests.dll" id="02b2d8c7-abe5-5f60-acbc-ce36ee718d79">
+      <Execution id="e8876046-1ef6-4fcd-a674-795f6268f0a3" />
+      <TestMethod codeBase="/work/dotnet/Shop.Tests/bin/Debug/net10.0/Shop.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Shop.Tests.CartTests" name="PositiveQuantities" />
+    </UnitTest>
+    <UnitTest name="Shop.Tests.CartTests.AppliesCoupon" storage="/private/tmp/claude-501/-users-dev-ideaprojects-stream-overlay/4fa45f58-18ec-4902-87a2-dba40b025660/scratchpad/fx/dotnet/shop.tests/bin/debug/net10.0/shop.tests.dll" id="23880da9-762b-4fcc-9956-7373b0958ffa">
+      <Execution id="32f02d79-3077-47d8-bca0-3127618f3802" />
+      <TestMethod codeBase="/work/dotnet/Shop.Tests/bin/Debug/net10.0/Shop.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Shop.Tests.CartTests" name="AppliesCoupon" />
+    </UnitTest>
+    <UnitTest name="Shop.Tests.CartTests.HandlesCurrency" storage="/private/tmp/claude-501/-users-dev-ideaprojects-stream-overlay/4fa45f58-18ec-4902-87a2-dba40b025660/scratchpad/fx/dotnet/shop.tests/bin/debug/net10.0/shop.tests.dll" id="7f20f454-3571-6b87-f3f7-efbbfa9714bd">
+      <Execution id="5f90a855-b25e-4f59-b2da-33a26c8097d7" />
+      <TestMethod codeBase="/work/dotnet/Shop.Tests/bin/Debug/net10.0/Shop.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Shop.Tests.CartTests" name="HandlesCurrency" />
+    </UnitTest>
+    <UnitTest name="Shop.Tests.CartTests.PositiveQuantities(q: 2)" storage="/private/tmp/claude-501/-users-dev-ideaprojects-stream-overlay/4fa45f58-18ec-4902-87a2-dba40b025660/scratchpad/fx/dotnet/shop.tests/bin/debug/net10.0/shop.tests.dll" id="910586ba-37ce-e898-2778-e4b160d7e5a7">
+      <Execution id="d037548b-2db4-4d2b-a262-66c9ef1c003d" />
+      <TestMethod codeBase="/work/dotnet/Shop.Tests/bin/Debug/net10.0/Shop.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Shop.Tests.CartTests" name="PositiveQuantities" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="02b2d8c7-abe5-5f60-acbc-ce36ee718d79" executionId="e8876046-1ef6-4fcd-a674-795f6268f0a3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="23880da9-762b-4fcc-9956-7373b0958ffa" executionId="32f02d79-3077-47d8-bca0-3127618f3802" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7f20f454-3571-6b87-f3f7-efbbfa9714bd" executionId="5f90a855-b25e-4f59-b2da-33a26c8097d7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="910586ba-37ce-e898-2778-e4b160d7e5a7" executionId="d037548b-2db4-4d2b-a262-66c9ef1c003d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cafc2db8-a9fe-253c-95f8-bd808a950a55" executionId="d9ec2cdf-9809-4ded-8927-36bbeb5812d6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="5" executed="4" passed="3" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.12)
+[xUnit.net 00:00:00.04]   Discovering: Shop.Tests
+[xUnit.net 00:00:00.06]   Discovered:  Shop.Tests
+[xUnit.net 00:00:00.07]   Starting:    Shop.Tests
+[xUnit.net 00:00:00.10]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:00.10]       Expected: 100
+[xUnit.net 00:00:00.10]       Actual:   90
+[xUnit.net 00:00:00.10]       Stack Trace:
+[xUnit.net 00:00:00.10]         /work/dotnet/Shop.Tests/UnitTest1.cs(9,0): at Shop.Tests.CartTests.AppliesCoupon()
+[xUnit.net 00:00:00.10]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+[xUnit.net 00:00:00.10]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:00.10]       later
+[xUnit.net 00:00:00.10]   Finished:    Shop.Tests
+Test 'Shop.Tests.CartTests.HandlesCurrency' was skipped in the test run.
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="build-host" outcome="Error" timestamp="2026-09-25T21:27:14.7024930+02:00">
+        <Text>[xUnit.net 00:00:00.10]     Shop.Tests.CartTests.AppliesCoupon [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="build-host" outcome="Warning" timestamp="2026-09-25T21:27:14.7041650+02:00">
+        <Text>[xUnit.net 00:00:00.10]     Shop.Tests.CartTests.HandlesCurrency [SKIP]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

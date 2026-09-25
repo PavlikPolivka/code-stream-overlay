@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="1" tests="4" time="0.017" timestamp="2026-09-25T21:23:43.820734+02:00" hostname="build-host"><testcase classname="test_parse" name="test_parses_ints" time="0.000" /><testcase classname="test_parse" name="test_parses_floats" time="0.000"><failure message="AssertionError: rounding broke&#10;assert 1.5 == 2.0&#10; +  where 1.5 = float('1.5')">def test_parses_floats():
+&gt;       assert float("1.5") == 2.0, "rounding broke"
+E       AssertionError: rounding broke
+E       assert 1.5 == 2.0
+E        +  where 1.5 = float('1.5')
+
+test_parse.py:5: AssertionError</failure></testcase><testcase classname="test_parse" name="test_parses_dates" time="0.000"><skipped type="pytest.skip" message="later">/work/py/test_parse.py:6: later</skipped></testcase><testcase classname="test_parse.TestTokens" name="test_split" time="0.000" /></testsuite></testsuites>

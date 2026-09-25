@@ -9,5 +9,18 @@
   "git.files": "{n} files changed",
   "git.lastCommit": "last commit {ago}",
   "git.noCommits": "no commits this session",
-  "file.editing": "Editing"
+  "file.editing": "Editing",
+  "tests.idle": "TESTS",
+  "tests.running": "RUNNING",
+  "tests.passBadge": "PASS",
+  "tests.failBadge": "FAIL",
+  "tests.errorBadge": "ERROR",
+  "tests.pass": "Tests passing",
+  "tests.fail": "{failed} failing",
+  "tests.runningText": "Running tests…",
+  "tests.error": "Test run broke",
+  "tests.waiting": "Waiting for a run",
+  "tests.counts": "{passed}/{total}",
+  "tests.noCounts": "exit code only",
+  "tests.skipped": "{n} skipped"
 }

@@ -1,0 +1,26 @@
+{"Time":"2026-09-25T21:25:00.455959+02:00","Action":"start","Package":"example.com/shop/orders"}
+{"Time":"2026-09-25T21:25:00.756499+02:00","Action":"run","Package":"example.com/shop/orders","Test":"TestTotal"}
+{"Time":"2026-09-25T21:25:00.756642+02:00","Action":"output","Package":"example.com/shop/orders","Test":"TestTotal","Output":"=== RUN   TestTotal\n","OutputType":"frame"}
+{"Time":"2026-09-25T21:25:00.756708+02:00","Action":"output","Package":"example.com/shop/orders","Test":"TestTotal","Output":"--- PASS: TestTotal (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-25T21:25:00.756731+02:00","Action":"pass","Package":"example.com/shop/orders","Test":"TestTotal","Elapsed":0}
+{"Time":"2026-09-25T21:25:00.756752+02:00","Action":"run","Package":"example.com/shop/orders","Test":"TestTotalTable"}
+{"Time":"2026-09-25T21:25:00.756811+02:00","Action":"output","Package":"example.com/shop/orders","Test":"TestTotalTable","Output":"=== RUN   TestTotalTable\n","OutputType":"frame"}
+{"Time":"2026-09-25T21:25:00.756841+02:00","Action":"run","Package":"example.com/shop/orders","Test":"TestTotalTable/zero"}
+{"Time":"2026-09-25T21:25:00.756854+02:00","Action":"output","Package":"example.com/shop/orders","Test":"TestTotalTable/zero","Output":"=== RUN   TestTotalTable/zero\n","OutputType":"frame"}
+{"Time":"2026-09-25T21:25:00.756866+02:00","Action":"output","Package":"example.com/shop/orders","Test":"TestTotalTable/zero","Output":"--- PASS: TestTotalTable/zero (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-25T21:25:00.756893+02:00","Action":"pass","Package":"example.com/shop/orders","Test":"TestTotalTable/zero","Elapsed":0}
+{"Time":"2026-09-25T21:25:00.756909+02:00","Action":"run","Package":"example.com/shop/orders","Test":"TestTotalTable/one"}
+{"Time":"2026-09-25T21:25:00.756918+02:00","Action":"output","Package":"example.com/shop/orders","Test":"TestTotalTable/one","Output":"=== RUN   TestTotalTable/one\n","OutputType":"frame"}
+{"Time":"2026-09-25T21:25:00.756927+02:00","Action":"output","Package":"example.com/shop/orders","Test":"TestTotalTable/one","Output":"    order_test.go:15: Total(1,5) = 5, want 6\n","OutputType":"error"}
+{"Time":"2026-09-25T21:25:00.756941+02:00","Action":"output","Package":"example.com/shop/orders","Test":"TestTotalTable/one","Output":"--- FAIL: TestTotalTable/one (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-25T21:25:00.75695+02:00","Action":"fail","Package":"example.com/shop/orders","Test":"TestTotalTable/one","Elapsed":0}
+{"Time":"2026-09-25T21:25:00.75696+02:00","Action":"output","Package":"example.com/shop/orders","Test":"TestTotalTable","Output":"--- FAIL: TestTotalTable (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-25T21:25:00.756969+02:00","Action":"fail","Package":"example.com/shop/orders","Test":"TestTotalTable","Elapsed":0}
+{"Time":"2026-09-25T21:25:00.756985+02:00","Action":"run","Package":"example.com/shop/orders","Test":"TestDiscounts"}
+{"Time":"2026-09-25T21:25:00.756994+02:00","Action":"output","Package":"example.com/shop/orders","Test":"TestDiscounts","Output":"=== RUN   TestDiscounts\n","OutputType":"frame"}
+{"Time":"2026-09-25T21:25:00.757003+02:00","Action":"output","Package":"example.com/shop/orders","Test":"TestDiscounts","Output":"    order_test.go:21: not yet\n"}
+{"Time":"2026-09-25T21:25:00.757012+02:00","Action":"output","Package":"example.com/shop/orders","Test":"TestDiscounts","Output":"--- SKIP: TestDiscounts (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-09-25T21:25:00.75702+02:00","Action":"skip","Package":"example.com/shop/orders","Test":"TestDiscounts","Elapsed":0}
+{"Time":"2026-09-25T21:25:00.757033+02:00","Action":"output","Package":"example.com/shop/orders","Output":"FAIL\n","OutputType":"frame"}
+{"Time":"2026-09-25T21:25:00.757377+02:00","Action":"output","Package":"example.com/shop/orders","Output":"FAIL\texample.com/shop/orders\t0.301s\n","OutputType":"frame"}
+{"Time":"2026-09-25T21:25:00.757416+02:00","Action":"fail","Package":"example.com/shop/orders","Elapsed":0.301}

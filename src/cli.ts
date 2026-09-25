@@ -26,6 +26,13 @@ Options:
 `;
 
 export async function main(argv: string[]): Promise<number> {
+  // Claude Code hook: the hot path. Dispatch before parsing or importing anything else.
+  if (argv[0] === "hook") {
+    const { hook } = await import("./commands/hook.js");
+    await hook();
+    return 0;
+  }
+
   const { values, positionals } = parseArgs({
     args: argv,
     allowPositionals: true,
@@ -67,6 +74,15 @@ export async function main(argv: string[]): Promise<number> {
     case "start": {
       const { start } = await import("./commands/start.js");
       await start(flags);
+      return 0;
+    }
+    case "hooks": {
+      const { repoOrExit } = await import("./commands/common.js");
+      const { installHooks, uninstallHooks } = await import("./commands/hooks.js");
+      const repo = await repoOrExit();
+      if (sub === "install") await installHooks(repo);
+      else if (sub === "uninstall") await uninstallHooks(repo);
+      else throw new CliError(`usage: ${PKG_NAME} hooks install|uninstall`);
       return 0;
     }
     case "test": {

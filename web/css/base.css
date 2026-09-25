@@ -432,3 +432,59 @@ so-tests .so-message {
     padding: 0;
   }
 }
+
+/* ---------- agent ---------- */
+
+.so-agent .so-row {
+  flex-wrap: nowrap;
+  align-items: center;
+}
+.so-agent .so-action {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+.so-agent .so-counts {
+  flex: none;
+}
+.so-dot {
+  flex: none;
+  width: 0.7em;
+  height: 0.7em;
+  border-radius: 50%;
+  background: var(--so-muted);
+}
+so-agent[data-status="working"] .so-dot {
+  background: var(--so-pass);
+  animation: so-breathe 1.6s ease-in-out infinite;
+}
+so-agent[data-status="waiting"] .so-dot {
+  background: var(--so-warn);
+}
+so-agent[data-status="waiting"] {
+  animation: so-pulse 1.4s ease-in-out infinite;
+}
+so-agent[data-status="done"] .so-dot {
+  background: var(--so-accent);
+}
+so-agent[data-status="idle"] .so-action {
+  color: var(--so-muted);
+}
+.so-fx-attention {
+  outline: 2px solid var(--so-warn);
+}
+@keyframes so-breathe {
+  50% {
+    opacity: 0.35;
+  }
+}
+@keyframes so-pulse {
+  50% {
+    box-shadow:
+      0 0 0 3px var(--so-warn),
+      var(--so-shadow);
+  }
+}

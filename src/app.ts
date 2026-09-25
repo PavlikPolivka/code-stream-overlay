@@ -15,6 +15,7 @@ import { ADAPTERS, detectStacks, type StackAdapter } from "./collectors/tests/ad
 import { TestsCollector, resolvePlan } from "./collectors/tests/collector.js";
 import { CliError } from "./util/errors.js";
 import { GoalsCollector } from "./collectors/goals.js";
+import { AgentCollector } from "./collectors/agent.js";
 import { startServer, type RunningServer } from "./server/http.js";
 import type { Api } from "./server/routes.js";
 import { newToken } from "./server/auth.js";
@@ -115,10 +116,12 @@ export async function createApp(repo: RepoPaths, config: Config): Promise<App> {
     ? new TestsCollector(store, bus, { root: repo.root, plan, privacy, since: session.startedAt })
     : undefined;
   const goals = config.goals.source === "off" ? undefined : new GoalsCollector(store, bus, { root: repo.root, goals: config.goals });
-  const collectors: Collector[] = [timer, files, gitCollector, ...(tests ? [tests] : []), ...(goals ? [goals] : [])];
+  const agent = new AgentCollector(store, bus, { root: repo.root, agent: config.agent, privacy });
+  const collectors: Collector[] = [timer, files, gitCollector, agent, ...(tests ? [tests] : []), ...(goals ? [goals] : [])];
 
   const api: Api = {
     session: (action) => timer.action(action),
+    agent: (body) => agent.receive(body),
     runTests: tests ? () => tests.run() : undefined,
     setState: (key, value) => {
       if (key === "title" || key === "subtitle") {

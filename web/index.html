@@ -5,12 +5,19 @@
     <title>stream-overlay</title>
     <link rel="stylesheet" href="/static/css/base.css" />
     <link id="so-theme" rel="stylesheet" href="/themes/terminal.css" />
+    <style>
+      /* Temporary preview grid; the real 1920×1080 slot layout lands in M6. */
+      #so-root { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 12px; padding: 12px; align-items: start; }
+      html { background: #1b1f24; }
+    </style>
   </head>
   <body>
-    <main id="so-root"><so-timer></so-timer></main>
+    <main id="so-root">
+      <so-now></so-now><so-timer></so-timer><so-git></so-git><so-tests></so-tests><so-goals></so-goals><so-file></so-file><so-agent></so-agent>
+    </main>
     <script type="module">
       import "/static/js/core.js";
-      import "/static/js/widgets/so-timer.js";
+      for (const w of ["now", "timer", "git", "tests", "goals", "file", "agent"]) import(`/static/js/widgets/so-${w}.js`);
     </script>
   </body>
 </html>

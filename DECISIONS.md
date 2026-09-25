@@ -41,3 +41,12 @@ One line per decision where the design doc was ambiguous or deviated from.
 - The goals widget lists open items only: a checked item strikes through, slides out after 2 s, and leaves the progress bar as the record.
 - With `goals.source: "claude-todos"`, done/total come from the todos; with `both`, they come from the file and todos show as a sub-list.
 - The goals file is read up to 256 KB and watched through its directory, so it can be created or replaced later.
+- Checked against the current Claude Code hooks docs and real captured payloads (2026-09-25). Current Claude Code tracks todos with `TaskCreate`/`TaskUpdate` (ids in `tool_response.task.id`) instead of `TodoWrite`. Both are supported, and tasks are tracked per `session_id`.
+- The hook forwards a slimmed payload (event, cwd, tool name, whitelisted tool_input keys, and the new task's id) instead of the raw one: Write/Edit payloads carry file contents and tool output that would exceed the 64 KB body limit and have no business leaving the machine's process boundary. Mapping still happens server-side.
+- Notification types other than permission/idle/elicitation/needs-input prompts (e.g. auth_success) don't change the agent status.
+- A Bash command is redacted first, then collapsed to one line and truncated to 60 chars, so a truncation can't expose half a secret.
+- Files outside the repo show as "a file outside the repo"; privacy-ignored files show as "a hidden file".
+- `hooks install` also adds `/.claude/settings.local.json` to `.git/info/exclude` when nothing ignores it yet, so `git status` stays clean; uninstall removes that line again. The install record lives in `.git/stream-overlay/hooks.json`.
+- Uninstall restores the backup byte-for-byte when the remaining settings equal it; otherwise it writes the remaining settings with 2-space indentation.
+- Hook command paths use forward slashes on Windows, which work in both cmd and Git Bash.
+- ToolSearch shows as "Loading tools"; Task tools and TodoWrite show as "Planning".

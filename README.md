@@ -96,6 +96,28 @@ The first `#` heading becomes the title. Top-level items count toward progress, 
 
 `goals.source` can also be `"claude-todos"` (the coding agent's todo list), `"both"`, or `"off"`.
 
+## Coding agent
+
+### Claude Code
+
+```sh
+npm i -g stream-overlay        # a stable path for the hook
+stream-overlay hooks install   # merges hooks into .claude/settings.local.json
+```
+
+The agent widget then shows what Claude is doing ("Editing src/Order.java", "Running ./mvnw test", "Waiting for you"), with counters for edits, commands and reads. Its task list can feed the goals widget (`goals.source: "claude-todos"` or `"both"`).
+
+The hook is built to be invisible. It never prints, always exits 0, takes about 50 ms, and gives up after 300 ms if the overlay isn't running. File contents and tool output never leave the hook. Prompts are never shown unless `agent.showPrompts: true`. `stream-overlay hooks uninstall` restores your settings file.
+
+### Any other agent
+
+```sh
+curl -X POST http://127.0.0.1:4747/api/agent -H "Authorization: Bearer $TOKEN" \
+  -d '{"type":"action","text":"Refactoring parser","tool":"aider"}'
+```
+
+Event types: `action` (`text`, `tool`), `thinking`, `waiting`, `done`, `todos` (`[{ "content": "...", "status": "in_progress" }]`). The token is in `.git/stream-overlay/server.json`.
+
 ## License
 
 MIT

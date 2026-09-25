@@ -27,5 +27,11 @@
   "goals.done": "{done}/{total} done",
   "goals.allDone": "All goals done",
   "goals.stretch": "stretch",
-  "goals.agentTodos": "Agent todos"
+  "goals.agentTodos": "Agent todos",
+  "agent.name": "Claude",
+  "agent.waiting": "Waiting for you",
+  "agent.done": "Done",
+  "agent.idle": "Idle",
+  "agent.working": "Working…",
+  "agent.counts": "{edits} edits · {commands} cmds · {reads} reads"
 }

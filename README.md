@@ -118,6 +118,46 @@ curl -X POST http://127.0.0.1:4747/api/agent -H "Authorization: Bearer $TOKEN" \
 
 Event types: `action` (`text`, `tool`), `thinking`, `waiting`, `done`, `todos` (`[{ "content": "...", "status": "in_progress" }]`). The token is in `.git/stream-overlay/server.json`.
 
+## Look and feel
+
+**Layout.** `/` is a 1920×1080 stage scaled to the source size. Widgets sit in slots, and widgets that share a slot stack:
+
+| Widget  | Default size | Default slot  |
+|---------|--------------|---------------|
+| now     | 900×90       | top-left      |
+| timer   | 360×120      | top-right     |
+| git     | 360×140      | right-middle  |
+| tests   | 360×140      | right-middle (below git) |
+| goals   | 420×320      | left-middle   |
+| agent   | 1000×70      | bottom-center |
+| commits | 1920×48      | bottom-bar    |
+| file    | 600×200      | off by default |
+| custom  | 360×80       | off by default |
+
+Choose widgets with `display.widgets`. Move them with `display.layout`, either `{ "goals": { "slot": "bottom-left" } }` or `{ "goals": { "x": 40, "y": 600, "w": 420, "h": 320 } }`.
+
+**Themes.** `terminal` (dark panels, monospace) and `minimal` (no panels, outlined text for any background). You can also give a path to your own `.css` file, which overrides the tokens from `web/css/base.css` (`--so-fg`, `--so-bg`, `--so-accent`, `--so-pass`, `--so-fail`, `--so-radius`, …). `display.css` appends extra CSS after the theme.
+
+**Tone.** `plain` or `playful` ("All green, ship it", "3 gremlins loose"). Override any label with `display.labels`, e.g. `{ "tests.pass": "All green" }`. Keys are listed in `web/i18n/plain.json`.
+
+**Per-source URL params** change only that browser source:
+
+| Param | Example | Effect |
+|-------|---------|--------|
+| `theme` | `theme=minimal` | theme for this source |
+| `tone` | `tone=playful` | label set |
+| `font` | `font=Fira%20Code` | any Google Fonts family |
+| `scale` | `scale=1.5` | 0.5 – 3 |
+| `align` | `align=right` | left, center, right |
+| `bg` | `bg=solid` | solid background instead of transparent |
+| `hide` | `hide=message,counts` | hide sub-elements |
+| `label.<key>` | `label.tests.pass=Ship%20it` | override one label |
+| `confetti` | `confetti=0` | no confetti |
+
+Example: `http://127.0.0.1:4747/w/tests?theme=neon&scale=1.5&label.tests.pass=Ship%20it`
+
+**Animations.** Tests going green flash and throw confetti (`display.confetti: false` turns that off), and tests going red shake. A checked goal strikes through and slides out, new commits slide into the ticker, a new timer phase is announced for 3 s, and the agent widget pulses while it waits for you. If the server goes away, widgets fade to 40% and recover on their own.
+
 ## License
 
 MIT

@@ -33,5 +33,6 @@
   "agent.done": "Done",
   "agent.idle": "Idle",
   "agent.working": "Working…",
-  "agent.counts": "{edits} edits · {commands} cmds · {reads} reads"
+  "agent.counts": "{edits} edits · {commands} cmds · {reads} reads",
+  "commits.label": "{n} commits"
 }

@@ -1,5 +1,6 @@
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import os from "node:os";
 import { randomUUID } from "node:crypto";
 import { EMPTY_TREE, VERSION } from "./constants.js";
 import type { Config } from "./config/schema.js";
@@ -49,10 +50,14 @@ export function initialState(config: Config, repoName: string, session: State["s
   return {
     meta: {
       version: VERSION,
-      theme: config.display.theme,
+      theme: config.display.theme.endsWith(".css") ? "/user/theme.css" : config.display.theme,
       tone: config.display.tone,
       labels: config.display.labels,
       confetti: config.display.confetti,
+      ...(config.display.font ? { font: config.display.font } : {}),
+      ...(config.display.css ? { css: "/user/extra.css" } : {}),
+      widgets: config.display.widgets,
+      layout: config.display.layout,
     },
     project: {
       name: repoName,
@@ -78,6 +83,14 @@ export async function headSha(root: string): Promise<string | undefined> {
   }
 }
 
+/** Local CSS files named in the config, served under /user/. Nothing else from disk is exposed. */
+function userFiles(root: string, config: Config): Record<string, string> {
+  const files: Record<string, string> = {};
+  if (config.display.theme.endsWith(".css")) files["theme.css"] = path.resolve(root, config.display.theme);
+  if (config.display.css) files["extra.css"] = path.resolve(root, config.display.css);
+  return files;
+}
+
 function pickAdapter(setting: string, stacks: StackAdapter[]): StackAdapter | undefined {
   if (setting === "auto") return stacks[0];
   if (setting === "off") return undefined;
@@ -98,7 +111,7 @@ export async function createApp(repo: RepoPaths, config: Config): Promise<App> {
   const store = new Store(initialState(config, repoName, session));
   const bus = new Bus();
   const timer = new TimerCollector(store, { phases, autoStart: config.session.autoStart });
-  const privacy = createPrivacy(config.privacy);
+  const privacy = createPrivacy(config.privacy, { root: repo.root, home: os.homedir() });
 
   const stacks = await detectStacks(repo.root);
   const adapter = pickAdapter(config.tests.adapter, stacks);
@@ -145,6 +158,7 @@ export async function createApp(repo: RepoPaths, config: Config): Promise<App> {
     token,
     webDir: webRoot(),
     repoName,
+    userFiles: userFiles(repo.root, config),
     api,
   });
 

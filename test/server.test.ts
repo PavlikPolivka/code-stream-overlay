@@ -6,6 +6,7 @@ import { TimerCollector } from "../src/collectors/timer.js";
 import { startServer, type RunningServer } from "../src/server/http.js";
 import { webRoot } from "../src/util/paths.js";
 import { raw, sse } from "./helpers.js";
+import path from "node:path";
 
 const TOKEN = "t0ken";
 
@@ -98,6 +99,23 @@ describe("HTTP server", () => {
     expect(JSON.parse(events[1].data).project.name).toBe("repo");
     expect(JSON.parse(events[2].data)).toEqual({ key: "custom", value: { coffee: 3 } });
     expect(JSON.parse(events[3].data)).toEqual({ name: "commit", payload: { subject: "hello" } });
+  });
+});
+
+describe("user CSS files", () => {
+  it("serves only the files named in the config", async () => {
+    const store = new Store(initialState(defaultConfig(), "repo", TimerCollector.initial("s", "abc", [], true)));
+    const css = path.join(webRoot(), "themes", "minimal.css");
+    const srv = await startServer({ store, host: "127.0.0.1", port: 0, token: TOKEN, webDir: webRoot(), repoName: "r", api: {}, userFiles: { "theme.css": css } });
+    try {
+      const ok = await raw(srv.port, "GET", "/user/theme.css");
+      expect(ok.status).toBe(200);
+      expect(ok.headers["content-type"]).toContain("text/css");
+      expect((await raw(srv.port, "GET", "/user/extra.css")).status).toBe(404);
+      expect((await raw(srv.port, "GET", "/user/constructor")).status).toBe(404);
+    } finally {
+      await srv.close();
+    }
   });
 });
 

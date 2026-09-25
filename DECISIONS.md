@@ -50,3 +50,10 @@ One line per decision where the design doc was ambiguous or deviated from.
 - Uninstall restores the backup byte-for-byte when the remaining settings equal it; otherwise it writes the remaining settings with 2-space indentation.
 - Hook command paths use forward slashes on Windows, which work in both cmd and Git Bash.
 - ToolSearch shows as "Loading tools"; Task tools and TodoWrite show as "Planning".
+- The composed layout is built in the browser from `meta.widgets` and `meta.layout` (added to the meta slice). A widget in the same slot stacks vertically, bottom slots grow upward, and explicit `{x,y,w,h}` placements are absolute on the 1920×1080 stage.
+- Slot anchors (canvas px): margin 32, left/right-middle start at y 180/200, bottom slots sit above the 48 px bottom bar, bottom-center is centered.
+- `so-commits` (ticker) and `so-custom` ship in v0.1 because `commits` is in the default widget list.
+- A theme or `display.css` given as a file path is served at `/user/theme.css` / `/user/extra.css`; only those configured files are exposed.
+- The minimal theme uses outlined text (`-webkit-text-stroke` + `paint-order`) on top of the heavy shadow, since a shadow alone wasn't readable over busy code.
+- Displayed text replaces the repo root with `.` and the home directory (and the bare user name, e.g. in temp paths) with `~`, found when the live agent widget showed a scratchpad path.
+- The `confetti=0` URL param disables confetti for one source.

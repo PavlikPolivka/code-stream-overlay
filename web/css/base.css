@@ -488,3 +488,91 @@ so-agent[data-status="idle"] .so-action {
       var(--so-shadow);
   }
 }
+
+/* ---------- composed layout ---------- */
+
+body.so-layout {
+  width: 100vw;
+  height: 100vh;
+}
+#so-stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: 0 0;
+}
+.so-slot {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: var(--so-gap);
+}
+.so-slot-bottom-left,
+.so-slot-bottom-center,
+.so-slot-bottom-right {
+  justify-content: flex-end;
+}
+.so-slot-top-right,
+.so-slot-right-middle,
+.so-slot-bottom-right {
+  align-items: flex-end;
+}
+#so-confetti {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ---------- commits ticker ---------- */
+
+.so-commits {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  border-radius: 0;
+  padding: 0 18px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.so-commits.so-empty {
+  display: none;
+}
+.so-commits .so-label {
+  flex: none;
+}
+.so-ticker {
+  display: flex;
+  gap: 2.2em;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, #000 90%, transparent);
+}
+.so-commit {
+  flex: none;
+  font-size: 0.85em;
+}
+.so-commit .so-sha {
+  color: var(--so-accent);
+}
+.so-commit.so-fresh {
+  animation: so-slide-in 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+@keyframes so-slide-in {
+  from {
+    transform: translateX(-60px);
+    opacity: 0;
+  }
+}
+
+/* ---------- custom ---------- */
+
+.so-custom .so-row {
+  justify-content: space-between;
+}
+.so-custom-value {
+  font-size: 1.1em;
+}

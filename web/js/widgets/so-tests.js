@@ -31,7 +31,10 @@ class SoTests extends SoElement {
   }
 
   fx(name) {
-    if (name === "tests-green") this.flash("so-fx-green", this, 1600);
+    if (name === "tests-green") {
+      this.flash("so-fx-green", this, 1600);
+      so.confetti(this);
+    }
     if (name === "tests-red") this.flash("so-fx-shake", this, 700);
   }
 }

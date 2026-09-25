@@ -69,7 +69,23 @@ export interface Privacy {
   text(s: string, max?: number): string;
 }
 
-export function createPrivacy(p: Config["privacy"]): Privacy {
+/** Replace the repo root with "." and the home directory with "~" (they name the user). */
+export function shortenPaths(s: string, root?: string, home?: string): string {
+  let out = s;
+  for (const [prefix, rep] of [
+    [root, "."],
+    [home, "~"],
+  ] as const) {
+    if (!prefix || prefix.length < 2) continue;
+    for (const form of new Set([prefix, prefix.replace(/\\/g, "/")])) out = out.split(form).join(rep);
+  }
+  // Paths from the macOS temp dir etc. can still embed the user name (e.g. "-Users-<name>-").
+  const user = home ? home.split(/[\\/]/).filter(Boolean).at(-1) : undefined;
+  if (user && user.length > 2) out = out.split(user).join("~");
+  return out;
+}
+
+export function createPrivacy(p: Config["privacy"], where: { root?: string; home?: string } = {}): Privacy {
   const hidden = matcher(p.ignore);
   return {
     isHidden: hidden,
@@ -80,7 +96,7 @@ export function createPrivacy(p: Config["privacy"]): Privacy {
       return p.redactPaths ? clean.slice(clean.lastIndexOf("/") + 1) : clean;
     },
     text(s, max) {
-      const r = redactText(s);
+      const r = redactText(shortenPaths(s, where.root, where.home));
       return max !== undefined && r.length > max ? `${r.slice(0, max - 1)}…` : r;
     },
   };

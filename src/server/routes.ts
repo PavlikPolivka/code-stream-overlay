@@ -22,6 +22,7 @@ export interface RouteContext {
   webDir: string;
   repoName: string;
   api: Api;
+  userFiles: Record<string, string>;
 }
 
 export class HttpError extends Error {
@@ -146,6 +147,15 @@ export const routes: Route[] = [
     handle: (c, _q, res) => {
       need(c.api.runTests)();
       json(res, 202, { ok: true });
+    },
+  },
+  {
+    method: "GET",
+    pattern: /^\/user\/([\w.-]+)$/,
+    access: "none",
+    handle: async (c, _q, res, m) => {
+      const file = Object.hasOwn(c.userFiles, m[1]) ? c.userFiles[m[1]] : undefined;
+      if (!file || !(await sendFile(res, file))) throw new HttpError(404, "not found");
     },
   },
   {

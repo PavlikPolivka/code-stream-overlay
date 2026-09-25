@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createPrivacy, globToRegExp, matcher, redactText, HIDDEN_FILE, SOME_FILE, MASK } from "../src/privacy.js";
+import { shortenPaths, createPrivacy, globToRegExp, matcher, redactText, HIDDEN_FILE, SOME_FILE, MASK } from "../src/privacy.js";
 import { defaultConfig } from "../src/config/schema.js";
 
 describe("glob matcher", () => {
@@ -70,5 +70,18 @@ describe("createPrivacy", () => {
   });
   it("truncates text", () => {
     expect(createPrivacy(base).text("abcdef", 4)).toBe("abc…");
+  });
+});
+
+describe("shortenPaths", () => {
+  it("replaces the repo root, the home dir and the user name", () => {
+    expect(shortenPaths("cat /home/alice/code/app/src/a.ts", "/home/alice/code/app", "/home/alice")).toBe("cat ./src/a.ts");
+    expect(shortenPaths("ls /home/alice/Downloads", "/x", "/home/alice")).toBe("ls ~/Downloads");
+    expect(shortenPaths("cd /tmp/claude-501/-home-alice-code", "/x", "/home/alice")).toBe("cd /tmp/claude-501/-home-~-code");
+    expect(shortenPaths("type C:/Users/bob/x.txt", undefined, "C:\\Users\\bob")).toBe("type ~/x.txt");
+  });
+  it("is applied by privacy.text", () => {
+    const p = createPrivacy(defaultConfig().privacy, { root: "/r/app", home: "/r" });
+    expect(p.text("vim /r/app/README.md")).toBe("vim ./README.md");
   });
 });

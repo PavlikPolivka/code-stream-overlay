@@ -1,0 +1,41 @@
+/* minimal: no panels, light text with a heavy shadow, readable over any background. */
+:root {
+  --so-font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --so-fg: #ffffff;
+  --so-muted: rgba(255, 255, 255, 0.78);
+  --so-bg: transparent;
+  --so-border: none;
+  --so-shadow: none;
+  --so-accent: #7cc4ff;
+  --so-pass: #5ee27a;
+  --so-fail: #ff6b6b;
+  --so-warn: #ffc857;
+  --so-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 0 12px rgba(0, 0, 0, 0.75), 0 0 2px #000;
+  --so-pad: 6px 4px;
+}
+.so-bar {
+  background: rgba(0, 0, 0, 0.45);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+}
+.so-badge {
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+}
+.so-goal .so-check {
+  border-color: #fff;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+}
+.so-commits {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.55), transparent);
+}
+.so-phase-announce {
+  background: rgba(0, 0, 0, 0.6);
+}
+/* Outlined text (subtitle style) stays readable over busy code and bright video. */
+.so-widget {
+  -webkit-text-stroke: 3px rgba(0, 0, 0, 0.85);
+  paint-order: stroke fill;
+}
+.so-badge,
+.so-tag {
+  -webkit-text-stroke: 0;
+}

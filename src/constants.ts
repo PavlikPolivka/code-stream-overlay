@@ -1,6 +1,6 @@
 // Rename the tool by changing these values only.
 export const PKG_NAME = "code-stream-overlay";
-export const VERSION = "0.1.1";
+export const VERSION = "0.1.2";
 export const DEFAULT_PORT = 4747;
 export const PORT_ATTEMPTS = 20;
 /** Directory inside the real git dir holding everything the tool writes. */

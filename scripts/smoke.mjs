@@ -12,8 +12,12 @@ const npm = win ? "npm.cmd" : "npm";
 const npx = win ? "npx.cmd" : "npx";
 const fail = (msg) => {
   console.error(`SMOKE FAIL: ${msg}`);
+  // Visible in the public check-run annotations, not only in the (login-only) job log.
+  if (process.env.GITHUB_ACTIONS) console.log(`::error title=smoke::${String(msg).slice(0, 3000).replace(/%/g, "%25").replace(/\r/g, "%0D").replace(/\n/g, "%0A")}`);
   process.exit(1);
 };
+process.on("uncaughtException", (e) => fail(e?.stack ?? String(e)));
+process.on("unhandledRejection", (e) => fail(e?.stack ?? String(e)));
 
 const work = mkdtempSync(path.join(os.tmpdir(), "so-smoke-"));
 const tgzName = execFileSync(npm, ["pack", "--silent", "--pack-destination", work], { cwd: root, encoding: "utf8", shell: win }).trim().split(/\r?\n/).pop();

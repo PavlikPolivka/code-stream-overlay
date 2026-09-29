@@ -73,3 +73,4 @@ One line per decision where the design doc was ambiguous or deviated from.
 - CI runs lint, build, tests, the packed-tarball smoke test (`scripts/smoke.mjs`) and `npm publish --dry-run` on Linux, macOS and Windows with Node 22.
 - Published as `code-stream-overlay` (the npm name `stream-overlay` belongs to an unrelated package). The command, state dir (`.git/code-stream-overlay/`), shared config file and env var prefix (`CODE_STREAM_OVERLAY_`) all follow `PKG_NAME`.
 - Hooks count as ours if the command mentions the package name or a CLI path recorded at install time (`hooks.json`), so a dev checkout in a differently named folder can still uninstall its hooks.
+- Releases publish from GitHub Actions on `v*` tags via npm trusted publishing (OIDC, provenance). The workflow checks that the tag matches package.json and runs in a protected `npm` environment.

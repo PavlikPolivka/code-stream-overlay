@@ -3,6 +3,14 @@
   "version": "0.1.0",
   "description": "Live, repo-aware overlays for OBS: git, tests, goals, timer and coding-agent activity.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PavlikPolivka/code-stream-overlay.git"
+  },
+  "homepage": "https://github.com/PavlikPolivka/code-stream-overlay#readme",
+  "bugs": {
+    "url": "https://github.com/PavlikPolivka/code-stream-overlay/issues"
+  },
   "type": "module",
   "bin": {
     "code-stream-overlay": "dist/cli.js"

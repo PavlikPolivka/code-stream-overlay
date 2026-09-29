@@ -250,6 +250,15 @@ Unknown keys and wrong types are errors, and the message names the file and the 
 
 Everything lives in `.git/code-stream-overlay/` (server.json, private config, session summaries, `obs.json`, test reports for pytest and .NET). The only exception is `.claude/settings.local.json` after `hooks install`, a local file that is excluded from git automatically. The only tracked files it writes are `code-stream-overlay.json` and `GOALS.md`, and only if you choose them in `init`.
 
+## Releasing (maintainers)
+
+Releases are published by GitHub Actions (`.github/workflows/release.yml`) through npm trusted publishing, so no npm token lives in the repo.
+
+```sh
+npm version patch        # bumps package.json + src/constants.ts, commits, tags vX.Y.Z
+git push --follow-tags   # the tag triggers the release workflow
+```
+
 ## License
 
 MIT

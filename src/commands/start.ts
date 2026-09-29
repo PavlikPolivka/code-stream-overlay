@@ -3,6 +3,8 @@ import { PKG_NAME } from "../constants.js";
 import { createApp, type App } from "../app.js";
 import { isLoopback } from "../server/auth.js";
 import { log } from "../util/log.js";
+import { hooksInstalled } from "./hooks.js";
+import { readRecord as readObsRecord } from "../obs/install.js";
 import { CliError, loadOrExit, repoOrExit, runningServer, type GlobalFlags } from "./common.js";
 
 export function banner(app: App): string {
@@ -33,6 +35,7 @@ export async function start(flags: GlobalFlags): Promise<void> {
 
   const app = await createApp(repo, config);
   log.info(banner(app));
+  log.info(`  ${integrations(repo)}`);
   if (!flags["no-open"] && process.stdout.isTTY && !process.env.CI) openBrowser(`http://127.0.0.1:${app.info.port}/`);
 
   await new Promise<void>((resolve) => {
@@ -40,12 +43,20 @@ export async function start(flags: GlobalFlags): Promise<void> {
     const shutdown = async () => {
       if (stopping) return;
       stopping = true;
+      app.endSession();
       await app.stop();
       resolve();
     };
     process.on("SIGINT", shutdown);
     process.on("SIGTERM", shutdown);
   });
+}
+
+function integrations(repo: App["repo"]): string {
+  const hooks = hooksInstalled(repo) ? "installed" : `not installed (${PKG_NAME} hooks install)`;
+  const rec = readObsRecord(repo.stateDir);
+  const obs = rec ? `${rec.inputs.length} sources in "${rec.scene}"` : `not set up (${PKG_NAME} obs install)`;
+  return `Claude Code hooks: ${hooks} · OBS: ${obs}`;
 }
 
 function openBrowser(url: string) {

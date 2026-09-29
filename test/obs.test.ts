@@ -120,6 +120,15 @@ describe("install / uninstall", () => {
     c.close();
   });
 
+  it("keeps proportions on an ultrawide canvas and hugs its right edge", async () => {
+    const { m, c, opts } = await setup({ baseWidth: 2560, baseHeight: 1080 });
+    await installSources(c, opts);
+    const timer = m.scenes.get("Coding")!.find((i) => i.sourceName === "so · timer")!;
+    expect(timer.transform).toMatchObject({ scaleX: 1, scaleY: 1, positionX: 2560 - 32 - 360 });
+    expect(m.inputs.get("so · commits")!.inputSettings.width).toBe(2560);
+    c.close();
+  });
+
   it("adds existing sources to another scene and scales to the canvas", async () => {
     const { m, c, opts } = await setup({ baseWidth: 2560, baseHeight: 1440 });
     await installSources(c, opts);

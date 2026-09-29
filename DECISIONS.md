@@ -64,3 +64,10 @@ One line per decision where the design doc was ambiguous or deviated from.
 - The OBS password prompt only appears when OBS asks for authentication and stdin is a TTY; otherwise the error names `--obs-password` and the env var.
 - `obs install` targets the running server's port from server.json, or the configured port with a warning when no server runs.
 - `obs export` (stretch) is not implemented in v0.1.
+- The layout stage fills the viewport with one uniform scale (fit 1920×1080), so edge-anchored slots hug the real edges at any aspect ratio. `obs install` uses the same rule: a uniform scale plus a design canvas stretched to the real aspect ratio, so widgets are never distorted (found when the user viewed the layout in a non-16:9 window).
+- The commits bar spans the full stage width.
+- `/control` embeds the write token in a meta tag when bound to loopback, so its buttons work; it is same-origin only (Host check, no CORS). Off loopback the page reuses its `?token=`.
+- The session summary is saved per session id; `summary` shows the running server's live summary, otherwise the newest saved file.
+- `init --yes` writes the private config, installs Claude Code hooks only if `claude` is on PATH, and skips OBS. A starter goals file goes to `.git/stream-overlay/goals.md` unless GOALS.md is chosen.
+- `uninstall --purge` refuses while a server runs, and keeps the state dir if OBS sources couldn't be removed.
+- CI runs lint, build, tests, the packed-tarball smoke test (`scripts/smoke.mjs`) and `npm publish --dry-run` on Linux, macOS and Windows with Node 22.

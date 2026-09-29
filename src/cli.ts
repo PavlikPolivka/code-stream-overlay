@@ -85,6 +85,30 @@ export async function main(argv: string[]): Promise<number> {
       else throw new CliError(`usage: ${PKG_NAME} hooks install|uninstall`);
       return 0;
     }
+    case "stop":
+    case "pause":
+    case "resume":
+    case "next": {
+      const { callServer, repoOrExit } = await import("./commands/common.js");
+      const r = (await callServer(await repoOrExit(), "POST", `/api/session/${cmd}`)) as { session?: { status: string } };
+      log.info(`session ${r.session?.status ?? cmd}`);
+      return 0;
+    }
+    case "summary": {
+      const { summary } = await import("./commands/summary.js");
+      await summary(!!values.json);
+      return 0;
+    }
+    case "init": {
+      const { init } = await import("./commands/init.js");
+      await init(flags);
+      return 0;
+    }
+    case "uninstall": {
+      const { uninstall } = await import("./commands/uninstall.js");
+      await uninstall(flags);
+      return 0;
+    }
     case "obs": {
       const { obs } = await import("./commands/obs.js");
       await obs(sub, flags);

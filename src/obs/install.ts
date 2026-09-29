@@ -26,20 +26,21 @@ const W = 1920;
 const H = 1080;
 
 interface Anchor {
-  x: (w: number) => number;
+  x: (w: number, canvasW: number) => number;
   top?: number;
+  /** Distance of the stack's bottom edge from the canvas bottom. */
   bottom?: number;
 }
 
 const SLOTS: Record<string, Anchor> = {
   "top-left": { x: () => M, top: M },
-  "top-right": { x: (w) => W - M - w, top: M },
+  "top-right": { x: (w, cw) => cw - M - w, top: M },
   "left-middle": { x: () => M, top: 180 },
-  "right-middle": { x: (w) => W - M - w, top: 200 },
-  "bottom-left": { x: () => M, bottom: H - BAR - M },
-  "bottom-center": { x: (w) => W / 2 - w / 2, bottom: H - BAR - M },
-  "bottom-right": { x: (w) => W - M - w, bottom: H - BAR - M },
-  "bottom-bar": { x: () => 0, bottom: H },
+  "right-middle": { x: (w, cw) => cw - M - w, top: 200 },
+  "bottom-left": { x: () => M, bottom: BAR + M },
+  "bottom-center": { x: (w, cw) => cw / 2 - w / 2, bottom: BAR + M },
+  "bottom-right": { x: (w, cw) => cw - M - w, bottom: BAR + M },
+  "bottom-bar": { x: () => 0, bottom: 0 },
 };
 
 export interface Box {
@@ -50,8 +51,12 @@ export interface Box {
   h: number;
 }
 
-/** Positions on the 1920×1080 canvas. Widgets in one slot stack; bottom slots grow upward. */
-export function computeLayout(widgets: string[], layout: Record<string, Placement>): Box[] {
+/**
+ * Positions in design units. The design canvas is 1920×1080 widened or heightened to the
+ * real aspect ratio (`canvas`), so edge slots follow the real edges. Widgets in one slot
+ * stack; bottom slots grow upward.
+ */
+export function computeLayout(widgets: string[], layout: Record<string, Placement>, canvas = { w: W, h: H }): Box[] {
   const boxes: Box[] = [];
   const bySlot = new Map<string, string[]>();
   for (const name of widgets) {
@@ -67,19 +72,20 @@ export function computeLayout(widgets: string[], layout: Record<string, Placemen
   }
   for (const [slot, names] of bySlot) {
     const a = SLOTS[slot];
+    const size = (n: string) => (n === "commits" ? { w: canvas.w, h: WIDGET_SIZES[n].h } : WIDGET_SIZES[n]);
     if (a.top !== undefined) {
       let y = a.top;
       for (const n of names) {
-        const { w, h } = WIDGET_SIZES[n];
-        boxes.push({ widget: n, x: a.x(w), y, w, h });
+        const { w, h } = size(n);
+        boxes.push({ widget: n, x: a.x(w, canvas.w), y, w, h });
         y += h + GAP;
       }
     } else {
-      let y = a.bottom!;
+      let y = canvas.h - a.bottom!;
       for (const n of [...names].reverse()) {
-        const { w, h } = WIDGET_SIZES[n];
+        const { w, h } = size(n);
         y -= h;
-        boxes.push({ widget: n, x: a.x(w), y, w, h });
+        boxes.push({ widget: n, x: a.x(w, canvas.w), y, w, h });
         y -= GAP;
       }
     }
@@ -129,8 +135,9 @@ interface SourcePlan {
 
 export async function installSources(obs: ObsClient, o: InstallOptions): Promise<InstallResult> {
   const video = await obs.request<{ baseWidth: number; baseHeight: number }>("GetVideoSettings");
-  const sx = video.baseWidth / W;
-  const sy = video.baseHeight / H;
+  // One uniform scale (no stretching); the design canvas takes the real aspect ratio.
+  const scale = Math.min(video.baseWidth / W, video.baseHeight / H);
+  const design = { w: video.baseWidth / scale, h: video.baseHeight / scale };
   const scene: string =
     o.scene ??
     (await obs
@@ -141,8 +148,8 @@ export async function installSources(obs: ObsClient, o: InstallOptions): Promise
   const q = o.token ? `?token=${encodeURIComponent(o.token)}` : "";
   const plans: SourcePlan[] =
     o.mode === "single"
-      ? [{ name: `${SOURCE_PREFIX}layout`, url: `${o.baseUrl}/${q}`, box: { widget: "layout", x: 0, y: 0, w: W, h: H } }]
-      : computeLayout(o.widgets, o.layout).map((box) => ({ name: `${SOURCE_PREFIX}${box.widget}`, url: `${o.baseUrl}/w/${box.widget}${q}`, box }));
+      ? [{ name: `${SOURCE_PREFIX}layout`, url: `${o.baseUrl}/${q}`, box: { widget: "layout", x: 0, y: 0, w: Math.round(design.w), h: Math.round(design.h) } }]
+      : computeLayout(o.widgets, o.layout, design).map((box) => ({ name: `${SOURCE_PREFIX}${box.widget}`, url: `${o.baseUrl}/w/${box.widget}${q}`, box }));
 
   const { inputs } = await obs.request<{ inputs: { inputName: string }[] }>("GetInputList", { inputKind: "browser_source" });
   const existing = new Set(inputs.map((i) => i.inputName));
@@ -173,7 +180,7 @@ export async function installSources(obs: ObsClient, o: InstallOptions): Promise
     await obs.request("SetSceneItemTransform", {
       sceneName: scene,
       sceneItemId,
-      sceneItemTransform: { positionX: p.box.x * sx, positionY: p.box.y * sy, scaleX: sx, scaleY: sy },
+      sceneItemTransform: { positionX: p.box.x * scale, positionY: p.box.y * scale, scaleX: scale, scaleY: scale },
     });
   }
 

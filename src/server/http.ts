@@ -15,6 +15,8 @@ export interface ServerOptions {
   webDir: string;
   repoName: string;
   api: Api;
+  /** Put the write token into /control so its buttons work (loopback only). */
+  exposeTokenToControl?: boolean;
   /** Extra files served at /user/<name> (theme or CSS from the config). */
   userFiles?: Record<string, string>;
 }
@@ -30,7 +32,16 @@ export async function startServer(o: ServerOptions): Promise<RunningServer> {
   const hub = new SseHub(o.store);
   const loopback = isLoopback(o.host);
   let port = 0;
-  const ctx = { store: o.store, hub, webDir: o.webDir, repoName: o.repoName, api: o.api, userFiles: o.userFiles ?? {} };
+  const ctx = {
+    store: o.store,
+    hub,
+    webDir: o.webDir,
+    repoName: o.repoName,
+    api: o.api,
+    userFiles: o.userFiles ?? {},
+    // Off loopback the page is already opened with ?token=, which it reuses.
+    controlToken: o.exposeTokenToControl === false ? undefined : o.token,
+  };
 
   const server = createServer(async (req, res) => {
     try {

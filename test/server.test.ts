@@ -102,6 +102,22 @@ describe("HTTP server", () => {
   });
 });
 
+describe("control page", () => {
+  it("embeds the token only when allowed", async () => {
+    const store = new Store(initialState(defaultConfig(), "repo", TimerCollector.initial("s", "abc", [], true)));
+    for (const expose of [true, false]) {
+      const srv = await startServer({ store, host: "127.0.0.1", port: 0, token: TOKEN, webDir: webRoot(), repoName: "r", api: {}, exposeTokenToControl: expose });
+      try {
+        const r = await raw(srv.port, "GET", "/control");
+        expect(r.status).toBe(200);
+        expect(r.body.includes(`content="${TOKEN}"`)).toBe(expose);
+      } finally {
+        await srv.close();
+      }
+    }
+  });
+});
+
 describe("user CSS files", () => {
   it("serves only the files named in the config", async () => {
     const store = new Store(initialState(defaultConfig(), "repo", TimerCollector.initial("s", "abc", [], true)));

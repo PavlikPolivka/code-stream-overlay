@@ -8,6 +8,9 @@ Live, repo-aware overlays for OBS and other streaming software. Run it inside an
 
 > Requires Node.js 22+ and git on your PATH.
 
+![Composed layout over a code editor](docs/layout.gif)
+<!-- GIF placeholder: record the composed layout during a session. -->
+
 ## Quick start
 
 ```sh
@@ -21,6 +24,30 @@ stream-overlay · my-repo · maven (passive)
   Widgets  http://127.0.0.1:4747/w/<now|timer|git|tests|goals|commits|file|agent|custom>
   Control  http://127.0.0.1:4747/control
 ```
+
+`stream-overlay init` walks you through the options: test trigger mode, goals, Claude Code hooks and OBS sources. `init --yes` accepts the defaults.
+
+## Commands
+
+| Command | What it does |
+|---------|--------------|
+| `stream-overlay` / `start` | Start the overlay server for this repo |
+| `init [--yes]` | Setup wizard; writes `.git/stream-overlay/config.json` (or the shared `stream-overlay.json`) |
+| `pause` · `resume` · `next` · `stop` | Control the running session; `stop` ends it and saves the summary |
+| `test` | Trigger a test run |
+| `summary [--json]` | Current session, or the last saved one |
+| `hooks install` · `hooks uninstall` | Claude Code hooks |
+| `obs install` · `obs uninstall` | OBS browser sources |
+| `uninstall [--purge]` | Remove hooks and OBS sources; `--purge` also deletes `.git/stream-overlay/` |
+
+Global flags: `--port`, `--host`, `--config <path>`, `--theme`, `--tone`, `--tests-mode`, `--no-open`, `--verbose`, `--trust-repo-config`.
+
+Ending a session (with `stop`, Ctrl+C or SIGTERM) prints a Markdown summary covering time, phases, lines changed, commits, test runs, goals and agent activity. The JSON version is saved in `.git/stream-overlay/sessions/`.
+
+The **control page** (`/control`) has Pause / Resume / Next phase / Run tests / End session buttons. Add it to OBS as a custom browser dock.
+
+![Control dock](docs/control.gif)
+<!-- GIF placeholder -->
 
 ## Session timer
 
@@ -178,6 +205,50 @@ Choose widgets with `display.widgets`. Move them with `display.layout`, either `
 Example: `http://127.0.0.1:4747/w/tests?theme=neon&scale=1.5&label.tests.pass=Ship%20it`
 
 **Animations.** Tests going green flash and throw confetti (`display.confetti: false` turns that off), and tests going red shake. A checked goal strikes through and slides out, new commits slide into the ticker, a new timer phase is announced for 3 s, and the agent widget pulses while it waits for you. If the server goes away, widgets fade to 40% and recover on their own.
+
+## Configuration
+
+Settings are merged in layers, later ones winning. Objects merge deeply and arrays replace.
+
+1. Built-in defaults
+2. Global: `~/.config/stream-overlay/config.json` (`%APPDATA%\stream-overlay\config.json` on Windows)
+3. Shared repo file: `stream-overlay.json` (meant to be committed)
+4. Private repo file: `.git/stream-overlay/config.json`
+5. CLI flags
+6. URL params (display only, per browser source)
+
+```jsonc
+{
+  "port": 4747,
+  "host": "127.0.0.1",
+  "title": null,                  // default: GOALS.md heading, then branch, then repo name
+  "subtitle": null,
+  "session": { "preset": "90min", "phases": null, "autoStart": true },
+  "tests": { "adapter": "auto", "command": null, "reports": null, "mode": null,
+             "debounceMs": null, "intervalSec": 300, "timeoutSec": 600 },
+  "goals": { "source": "file", "file": "GOALS.md", "stretchHeading": "Stretch" },
+  "agent": { "enabled": true, "idleAfterSec": 120, "showPrompts": false, "showCommands": true },
+  "privacy": { "ignore": [".env*", "**/secrets/**", "*.pem", "*.key", "id_*"],
+               "redactPaths": false, "hideFileNames": false },
+  "display": { "theme": "terminal", "tone": "plain", "font": null, "css": null, "labels": {},
+               "widgets": ["now", "timer", "git", "tests", "goals", "agent", "commits"],
+               "layout": {}, "confetti": true },
+  "obs": { "host": "127.0.0.1", "port": 4455, "password": null, "scene": null, "mode": "widgets" }
+}
+```
+
+Unknown keys and wrong types are errors, and the message names the file and the path.
+
+## Security
+
+- The server binds to `127.0.0.1` by default. `--host 0.0.0.0` prints a warning and requires the token on every route, and the printed URLs include it.
+- Write routes (`POST /api/*`) always need the per-start token from `.git/stream-overlay/server.json`.
+- Requests whose `Host` header isn't the server's own are rejected (DNS-rebinding guard). There are no CORS headers, and JSON bodies are capped at 64 KB.
+- The test command comes only from local config or the detected adapter, never from an HTTP request.
+
+## Files it writes
+
+Everything lives in `.git/stream-overlay/` (server.json, private config, session summaries, `obs.json`, test reports for pytest and .NET). The only exception is `.claude/settings.local.json` after `hooks install`, a local file that is excluded from git automatically. The only tracked files it writes are `stream-overlay.json` and `GOALS.md`, and only if you choose them in `init`.
 
 ## License
 

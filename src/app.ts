@@ -17,9 +17,10 @@ import { TestsCollector, resolvePlan } from "./collectors/tests/collector.js";
 import { CliError } from "./util/errors.js";
 import { GoalsCollector } from "./collectors/goals.js";
 import { AgentCollector } from "./collectors/agent.js";
+import { buildSummary, saveSummary, toMarkdown, type SessionSummary } from "./summary.js";
 import { startServer, type RunningServer } from "./server/http.js";
 import type { Api } from "./server/routes.js";
-import { newToken } from "./server/auth.js";
+import { isLoopback, newToken } from "./server/auth.js";
 import { git } from "./util/exec.js";
 import { webRoot, type RepoPaths } from "./util/paths.js";
 import { log } from "./util/log.js";
@@ -43,6 +44,8 @@ export interface App {
   tests?: TestsCollector;
   privacy: Privacy;
   collectors: Collector[];
+  /** Stop the session timer, save the summary, return it (idempotent per session). */
+  endSession(): SessionSummary;
   stop(): Promise<void>;
 }
 
@@ -133,7 +136,11 @@ export async function createApp(repo: RepoPaths, config: Config): Promise<App> {
   const collectors: Collector[] = [timer, files, gitCollector, agent, ...(tests ? [tests] : []), ...(goals ? [goals] : [])];
 
   const api: Api = {
-    session: (action) => timer.action(action),
+    session: (action) => {
+      if (action === "stop") endSession();
+      else timer.action(action);
+    },
+    summary: () => buildSummary(store.get()),
     agent: (body) => agent.receive(body),
     runTests: tests ? () => tests.run() : undefined,
     setState: (key, value) => {
@@ -150,6 +157,20 @@ export async function createApp(repo: RepoPaths, config: Config): Promise<App> {
     },
   };
 
+  let saved: SessionSummary | undefined;
+  function endSession(): SessionSummary {
+    if (saved && store.get("session").status === "stopped") return saved;
+    timer.action("stop");
+    saved = buildSummary(store.get());
+    try {
+      saveSummary(repo.stateDir, saved);
+      log.info(`\n${toMarkdown(saved)}\n`);
+    } catch (e) {
+      log.warn(`could not save the session summary: ${(e as Error).message}`);
+    }
+    return saved;
+  }
+
   const token = newToken();
   const server = await startServer({
     store,
@@ -158,6 +179,7 @@ export async function createApp(repo: RepoPaths, config: Config): Promise<App> {
     token,
     webDir: webRoot(),
     repoName,
+    exposeTokenToControl: isLoopback(config.host),
     userFiles: userFiles(repo.root, config),
     api,
   });
@@ -187,6 +209,7 @@ export async function createApp(repo: RepoPaths, config: Config): Promise<App> {
     tests,
     privacy,
     collectors,
+    endSession,
     async stop() {
       if (stopped) return;
       stopped = true;

@@ -2,15 +2,57 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>stream-overlay</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--so-token-->
+    <title>stream-overlay control</title>
     <link rel="stylesheet" href="/static/css/base.css" />
     <link id="so-theme" rel="stylesheet" href="/themes/terminal.css" />
+    <style>
+      html, body { background: #0d1117; overflow: auto; }
+      body { padding: 12px; font-size: 15px; }
+      .so-controls { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; margin: 10px 0; }
+      button {
+        font: inherit; color: var(--so-fg); background: #21262d; border: 1px solid #30363d;
+        border-radius: 6px; padding: 10px 8px; cursor: pointer;
+      }
+      button:hover { background: #30363d; }
+      button:disabled { opacity: 0.5; cursor: default; }
+      #so-msg { color: var(--so-muted); min-height: 1.3em; font-size: 0.85em; }
+      .so-widget { margin-bottom: 8px; }
+    </style>
   </head>
   <body>
-    <main id="so-root"><so-timer></so-timer></main>
+    <so-timer></so-timer>
+    <div class="so-controls">
+      <button data-api="/api/session/pause">Pause</button>
+      <button data-api="/api/session/resume">Resume</button>
+      <button data-api="/api/session/next">Next phase</button>
+      <button data-api="/api/tests/run">Run tests</button>
+      <button data-api="/api/session/stop">End session</button>
+    </div>
+    <div id="so-msg"></div>
+    <so-tests></so-tests>
+    <so-agent></so-agent>
     <script type="module">
-      import "/static/js/core.js";
+      import { so } from "/static/js/core.js";
       import "/static/js/widgets/so-timer.js";
+      import "/static/js/widgets/so-tests.js";
+      import "/static/js/widgets/so-agent.js";
+      const token = document.querySelector('meta[name="so-token"]')?.content ?? so.params.get("token");
+      const msg = document.getElementById("so-msg");
+      for (const b of document.querySelectorAll("button[data-api]")) {
+        b.addEventListener("click", async () => {
+          b.disabled = true;
+          try {
+            const r = await fetch(b.dataset.api, { method: "POST", headers: token ? { Authorization: `Bearer ${token}` } : {} });
+            msg.textContent = r.ok ? `${b.textContent}: ok` : `${b.textContent}: ${(await r.json()).error ?? r.status}`;
+          } catch (e) {
+            msg.textContent = `${b.textContent}: ${e.message}`;
+          } finally {
+            b.disabled = false;
+          }
+        });
+      }
     </script>
   </body>
 </html>

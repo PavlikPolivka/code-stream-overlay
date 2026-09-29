@@ -20,7 +20,8 @@
     "build": "tsc -p tsconfig.build.json",
     "lint": "tsc --noEmit",
     "test": "vitest run",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "smoke": "node scripts/smoke.mjs"
   },
   "dependencies": {
     "chokidar": "^4.0.3",
@@ -32,5 +33,16 @@
     "@types/node": "^22.15.0",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"
-  }
+  },
+  "keywords": [
+    "obs",
+    "overlay",
+    "streaming",
+    "twitch",
+    "youtube",
+    "claude-code",
+    "git",
+    "tests",
+    "developer-tools"
+  ]
 }

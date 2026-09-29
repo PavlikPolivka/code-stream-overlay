@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import path from "node:path";
+import { readFile } from "node:fs/promises";
 import { VERSION, WIDGETS } from "../constants.js";
 import type { Store } from "../state/store.js";
 import type { SseHub } from "./sse.js";
@@ -23,6 +24,7 @@ export interface RouteContext {
   repoName: string;
   api: Api;
   userFiles: Record<string, string>;
+  controlToken?: string;
 }
 
 export class HttpError extends Error {
@@ -91,7 +93,18 @@ export const routes: Route[] = [
     method: "GET",
     pattern: /^\/control\/?$/,
     access: "read",
-    handle: (c, _q, res) => page(res, path.join(c.webDir, "control.html")),
+    handle: async (c, _q, res) => {
+      // Same-origin only (no CORS, Host check), so embedding the token doesn't leak it to other sites.
+      let html: string;
+      try {
+        html = await readFile(path.join(c.webDir, "control.html"), "utf8");
+      } catch {
+        throw new HttpError(404, "not found");
+      }
+      const meta = c.controlToken ? `<meta name="so-token" content="${c.controlToken}" />` : "";
+      res.writeHead(200, { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", "Referrer-Policy": "no-referrer" });
+      res.end(html.replace("<!--so-token-->", meta));
+    },
   },
   { method: "GET", pattern: /^\/events$/, access: "read", handle: (c, _q, res) => c.hub.add(res) },
   { method: "GET", pattern: /^\/api\/state$/, access: "read", handle: (c, _q, res) => json(res, 200, c.store.get()) },

@@ -23,7 +23,7 @@ const SLOTS = {
   "left-middle": { left: M, top: 180 },
   "right-middle": { right: M, top: 200 },
   "bottom-left": { left: M, bottom: BAR + M },
-  "bottom-center": { left: 960, bottom: BAR + M, center: true },
+  "bottom-center": { left: "50%", bottom: BAR + M, center: true },
   "bottom-right": { right: M, bottom: BAR + M },
   "bottom-bar": { left: 0, bottom: 0 },
 };
@@ -55,19 +55,30 @@ function build() {
       box = document.createElement("div");
       box.className = `so-slot so-slot-${slotName}`;
       const a = SLOTS[slotName];
-      for (const side of ["left", "right", "top", "bottom"]) if (a[side] !== undefined) box.style[side] = `${a[side]}px`;
+      for (const side of ["left", "right", "top", "bottom"]) {
+        if (a[side] !== undefined) box.style[side] = typeof a[side] === "number" ? `${a[side]}px` : a[side];
+      }
       if (a.center) box.style.transform = "translateX(-50%)";
       slots.set(slotName, box);
       stage.append(box);
     }
-    el.style.width = `${def.w}px`;
-    if (name === "commits") el.style.height = `${def.h}px`;
+    el.style.width = name === "commits" ? "100%" : `${def.w}px`;
+    if (name === "commits") {
+      el.style.height = `${def.h}px`;
+      box.style.right = "0";
+    }
     box.append(el);
   }
 }
 
+/**
+ * One uniform scale so a 1920×1080 design fits; the stage then covers the whole
+ * viewport in design units, so edge-anchored slots hug the real edges at any aspect ratio.
+ */
 function fit() {
   const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+  stage.style.width = `${innerWidth / s}px`;
+  stage.style.height = `${innerHeight / s}px`;
   stage.style.transform = `scale(${s})`;
 }
 

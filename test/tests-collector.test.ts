@@ -44,7 +44,9 @@ function copyReports(dir: string, variant: "maven-pass" | "maven-fail", mtime?: 
   mkdirSync(target, { recursive: true });
   for (const f of readdirSync(path.join(FX, "junit", variant))) {
     copyFileSync(path.join(FX, "junit", variant, f), path.join(target, f));
-    if (mtime) utimesSync(path.join(target, f), mtime, mtime);
+    // Windows' CopyFile keeps the source mtime; a test run writes fresh files.
+    const t = mtime ?? new Date();
+    utimesSync(path.join(target, f), t, t);
   }
 }
 
@@ -161,7 +163,7 @@ describe("active runs", () => {
   it("parses fresh reports after an active run", async () => {
     const dir = repo();
     const src = path.join(FX, "junit", "pytest.xml");
-    const cmd = `"${process.execPath}" -e "require('fs').mkdirSync('out',{recursive:true});require('fs').copyFileSync(${JSON.stringify(src).replace(/"/g, "'")}, 'out/report.xml'); process.exit(1)"`;
+    const cmd = `"${process.execPath}" -e "require('fs').mkdirSync('out',{recursive:true});require('fs').writeFileSync('out/report.xml', require('fs').readFileSync(${JSON.stringify(src).replace(/"/g, "'")})); process.exit(1)"`;
     write(dir, ".gitignore", "out/\n");
     const { app } = await boot(dir, { tests: { command: cmd, mode: "manual", reports: ["out/*.xml"] } });
     app.tests!.run();

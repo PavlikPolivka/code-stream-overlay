@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readFileSync, realpathSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import os from "node:os";
@@ -25,8 +25,17 @@ export interface RepoPaths {
 
 export async function resolveRepo(cwd: string): Promise<RepoPaths> {
   const out = await git(cwd, ["rev-parse", "--show-toplevel", "--absolute-git-dir"]);
-  const [root, gitDir] = out.trim().split(/\r?\n/);
-  return { root: path.resolve(root), gitDir: path.resolve(gitDir), stateDir: path.join(path.resolve(gitDir), STATE_DIR) };
+  const [root, gitDir] = out.trim().split(/\r?\n/).map(realPath);
+  return { root, gitDir, stateDir: path.join(gitDir, STATE_DIR) };
+}
+
+/** Canonical absolute path (long names on Windows, symlinks resolved); falls back to path.resolve. */
+export function realPath(p: string): string {
+  try {
+    return realpathSync.native(path.resolve(p));
+  } catch {
+    return path.resolve(p);
+  }
 }
 
 /**

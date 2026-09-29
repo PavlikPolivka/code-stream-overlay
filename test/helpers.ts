@@ -5,11 +5,17 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 
 export function tmpDir(prefix = "so-test-"): string {
-  return realpathSync(mkdtempSync(path.join(os.tmpdir(), prefix)));
+  // .native expands Windows 8.3 short names (RUNNER~1), matching what git reports.
+  return realpathSync.native(mkdtempSync(path.join(os.tmpdir(), prefix)));
 }
 
 export function rm(dir: string): void {
-  rmSync(dir, { recursive: true, force: true });
+  // Windows: watchers may hold the directory for a moment after close.
+  try {
+    rmSync(dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
+  } catch {
+    /* leave it to the OS temp cleaner */
+  }
 }
 
 export function sh(cwd: string, ...args: string[]): string {

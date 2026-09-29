@@ -50,10 +50,13 @@ export class GoalsCollector implements Collector {
     this.watcher = watch(dir, {
       ignoreInitial: true,
       depth: 0,
-      ignored: (p: string) => p !== dir && path.basename(p) !== base,
+      ignored: (p: string) => {
+        const rp = path.resolve(p);
+        return rp !== path.resolve(dir) && path.basename(rp).toLowerCase() !== base.toLowerCase();
+      },
     });
     this.watcher.on("all", (_e, p) => {
-      if (path.resolve(p) === this.file) this.reload();
+      if (path.basename(path.resolve(p)).toLowerCase() === base.toLowerCase()) this.reload();
     });
     this.watcher.on("error", (e) => log.debug("goals watcher error", e));
   }

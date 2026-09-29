@@ -80,13 +80,14 @@ describe("CLI end to end", () => {
     expect(JSON.parse(s.out)).toMatchObject({ repo: path.basename(dir), phases: { completed: ["Scope"] } });
   });
 
-  it("stop ends the session and saves the summary; SIGTERM shuts down cleanly", async () => {
+  it("stop ends the session and saves the summary; SIGTERM shuts down cleanly", { timeout: 15_000 }, async () => {
     expect((await run(dir, "stop")).out).toContain("session stopped");
     await waitFor(() => existsSync(path.join(dir, ".git", "code-stream-overlay", "sessions")));
     expect(banner).toContain("## Session summary");
+    // Windows can't deliver SIGTERM to a handler (Node terminates the process), so no cleanup there.
     server!.kill("SIGTERM");
-    await waitFor(() => server!.exitCode !== null, 5000);
-    expect(existsSync(path.join(dir, ".git", "code-stream-overlay", "server.json"))).toBe(false);
+    await waitFor(() => server!.exitCode !== null || server!.signalCode !== null, 5000);
+    if (process.platform !== "win32") expect(existsSync(path.join(dir, ".git", "code-stream-overlay", "server.json"))).toBe(false);
     expect(readdirSync(path.join(dir, ".git", "code-stream-overlay", "sessions"))).toHaveLength(1);
     const last = await run(dir, "summary");
     expect(last.out).toContain("## Session summary");

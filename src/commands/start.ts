@@ -34,8 +34,8 @@ export async function start(flags: GlobalFlags): Promise<void> {
   if (sharedHasPassword) log.warn(`obs.password is set in the shared config file; move it to .git/${PKG_NAME}/config.json.`);
 
   const app = await createApp(repo, config);
-  log.info(banner(app));
-  log.info(`  ${integrations(repo)}`);
+  // One write, so readers of stdout never see half a banner.
+  log.info(`${banner(app)}\n  ${integrations(repo)}`);
   if (!flags["no-open"] && process.stdout.isTTY && !process.env.CI) openBrowser(`http://127.0.0.1:${app.info.port}/`);
 
   await new Promise<void>((resolve) => {

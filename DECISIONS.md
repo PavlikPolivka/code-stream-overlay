@@ -74,3 +74,4 @@ One line per decision where the design doc was ambiguous or deviated from.
 - Published as `code-stream-overlay` (the npm name `stream-overlay` belongs to an unrelated package). The command, state dir (`.git/code-stream-overlay/`), shared config file and env var prefix (`CODE_STREAM_OVERLAY_`) all follow `PKG_NAME`.
 - Hooks count as ours if the command mentions the package name or a CLI path recorded at install time (`hooks.json`), so a dev checkout in a differently named folder can still uninstall its hooks.
 - Releases publish from GitHub Actions on `v*` tags via npm trusted publishing (OIDC, provenance). The workflow checks that the tag matches package.json and runs in a protected `npm` environment.
+- The CLI refuses Node < 22 with a clear message (engines only warns); the hook exits 0 silently on old Node. The OBS client reports a missing global WebSocket instead of "can't reach OBS" (found when a publish ran under Node 20).

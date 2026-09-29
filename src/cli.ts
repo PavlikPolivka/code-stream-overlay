@@ -25,12 +25,20 @@ Options:
   --trust-repo-config    Allow commands from the shared ${PKG_NAME}.json
 `;
 
+const MIN_NODE = 22;
+
 export async function main(argv: string[]): Promise<number> {
+  const nodeMajor = Number(process.versions.node.split(".")[0]);
   // Claude Code hook: the hot path. Dispatch before parsing or importing anything else.
+  // On an old Node it stays silent (it must never disturb the agent).
   if (argv[0] === "hook") {
+    if (nodeMajor < MIN_NODE) return 0;
     const { hook } = await import("./commands/hook.js");
     await hook();
     return 0;
+  }
+  if (nodeMajor < MIN_NODE) {
+    throw new CliError(`${PKG_NAME} needs Node.js ${MIN_NODE} or newer; this is ${process.version}. Install it from https://nodejs.org (or "nvm install ${MIN_NODE}").`);
   }
 
   const { values, positionals } = parseArgs({

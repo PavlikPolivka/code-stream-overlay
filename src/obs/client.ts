@@ -68,6 +68,9 @@ export class ObsClient {
         `can't reach OBS at ${url}. Is OBS running, with Tools → WebSocket Server Settings → "Enable WebSocket server" on?`,
       );
 
+    if (typeof WebSocket === "undefined") {
+      throw new ObsError(`this Node.js (${process.version}) has no built-in WebSocket; Node 22 or newer is required.`);
+    }
     return new Promise<ObsClient>((resolve, reject) => {
       let settled = false;
       let ws: WebSocket;

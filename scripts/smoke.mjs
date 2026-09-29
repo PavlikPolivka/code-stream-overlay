@@ -2,7 +2,7 @@
 // pre-generated surefire reports, and check the overlay picks them up.
 // Usage: node scripts/smoke.mjs
 import { execFileSync, spawn } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
@@ -63,7 +63,11 @@ try {
   const reports = path.join(repo, "target", "surefire-reports");
   mkdirSync(reports, { recursive: true });
   const fx = path.join(root, "test", "fixtures", "junit", "maven-pass");
-  for (const f of readdirSync(fx)) cpSync(path.join(fx, f), path.join(reports, f));
+  const now = new Date();
+  for (const f of readdirSync(fx)) {
+    cpSync(path.join(fx, f), path.join(reports, f));
+    utimesSync(path.join(reports, f), now, now); // Windows copies keep the old mtime, which reads as stale
+  }
   await until(
     async () => {
       const s = await (await fetch(`http://127.0.0.1:${port}/api/state`)).json();

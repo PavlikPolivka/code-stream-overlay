@@ -31,11 +31,11 @@ describe("mergeLayers", () => {
 
   it("reports file and path for invalid values", () => {
     try {
-      mergeLayers([{ source: "/x/stream-overlay.json", data: { tests: { timeoutSec: "soon" } } }]);
+      mergeLayers([{ source: "/x/code-stream-overlay.json", data: { tests: { timeoutSec: "soon" } } }]);
       expect.unreachable();
     } catch (e) {
       expect(e).toBeInstanceOf(ConfigError);
-      expect((e as Error).message).toContain("/x/stream-overlay.json");
+      expect((e as Error).message).toContain("/x/code-stream-overlay.json");
       expect((e as Error).message).toContain("tests.timeoutSec");
     }
   });

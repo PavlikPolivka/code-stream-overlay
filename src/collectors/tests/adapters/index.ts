@@ -6,7 +6,7 @@ export type ParserId = "junit" | "trx" | "go-json" | "exit-code";
 
 export interface AdapterContext {
   root: string;
-  /** Absolute .git/stream-overlay dir, for tools that need an output path. */
+  /** Absolute .git/code-stream-overlay dir, for tools that need an output path. */
   stateDir: string;
   platform: NodeJS.Platform;
 }

@@ -49,7 +49,7 @@ function copyReports(dir: string, variant: "maven-pass" | "maven-fail", mtime?: 
 }
 
 describe("adapter detection", () => {
-  const ctx = (root: string): AdapterContext => ({ root, stateDir: path.join(root, ".git", "stream-overlay"), platform: "linux" });
+  const ctx = (root: string): AdapterContext => ({ root, stateDir: path.join(root, ".git", "code-stream-overlay"), platform: "linux" });
 
   it.each([
     [{ "pom.xml": "<project/>" }, ["maven"]],
@@ -80,8 +80,8 @@ describe("adapter detection", () => {
     expect(byId("maven").command({ ...ctx(d), platform: "win32" })).toBe("mvn -q test");
     write(d, "pnpm-lock.yaml", "");
     expect(byId("node").command(ctx(d))).toBe("pnpm test");
-    expect(byId("python").command(ctx(d))).toBe("pytest -q --junitxml=.git/stream-overlay/pytest.xml");
-    expect(byId("dotnet").command(ctx(d))).toContain("--results-directory .git/stream-overlay/trx");
+    expect(byId("python").command(ctx(d))).toBe("pytest -q --junitxml=.git/code-stream-overlay/pytest.xml");
+    expect(byId("dotnet").command(ctx(d))).toContain("--results-directory .git/code-stream-overlay/trx");
   });
 
   it("config overrides adapter values", () => {
@@ -200,9 +200,9 @@ describe("state dir stays out of the tree", () => {
     dirs.push(d);
     const plan = resolvePlan(ADAPTERS.find((a) => a.id === "python"), defaultConfig().tests, {
       root: d,
-      stateDir: path.join(d, ".git", "stream-overlay"),
+      stateDir: path.join(d, ".git", "code-stream-overlay"),
       platform: "linux",
     })!;
-    expect(plan.reports[0]).toBe(path.join(d, ".git", "stream-overlay", "pytest.xml"));
+    expect(plan.reports[0]).toBe(path.join(d, ".git", "code-stream-overlay", "pytest.xml"));
   });
 });

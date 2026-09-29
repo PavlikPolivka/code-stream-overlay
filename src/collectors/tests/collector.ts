@@ -293,7 +293,7 @@ export class TestsCollector implements Collector {
   private async findReports(): Promise<{ file: string; mtime: number }[]> {
     const patterns = this.relReports();
     if (!patterns.length) return [];
-    // dot: false keeps ** out of .git; literal ".git/stream-overlay/..." patterns still match.
+    // dot: false keeps ** out of .git; literal ".git/code-stream-overlay/..." patterns still match.
     const files = await glob(patterns, {
       cwd: this.o.root,
       absolute: true,

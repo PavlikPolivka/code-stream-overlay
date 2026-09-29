@@ -1,5 +1,5 @@
 // Rename the tool by changing these values only.
-export const PKG_NAME = "stream-overlay";
+export const PKG_NAME = "code-stream-overlay";
 export const VERSION = "0.1.0";
 export const DEFAULT_PORT = 4747;
 export const PORT_ATTEMPTS = 20;

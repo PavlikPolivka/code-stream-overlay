@@ -1,9 +1,9 @@
-# stream-overlay
+# code-stream-overlay
 
 Live, repo-aware overlays for OBS and other streaming software. Run it inside any git repository and add the printed URLs as browser sources. Viewers see what you're building, how far along it is, whether tests pass, and what your coding agent is doing.
 
-- One command, zero config: `npx stream-overlay`
-- Adds no files to your tracked tree; everything lives in `.git/stream-overlay/`
+- One command, zero config: `npx code-stream-overlay`
+- Adds no files to your tracked tree; everything lives in `.git/code-stream-overlay/`
 - Every widget works as its own OBS browser source, plus one composed layout
 
 > Requires Node.js 22+ and git on your PATH.
@@ -15,34 +15,34 @@ Live, repo-aware overlays for OBS and other streaming software. Run it inside an
 
 ```sh
 cd your-repo
-npx stream-overlay
+npx code-stream-overlay
 ```
 
 ```
-stream-overlay · my-repo · maven (passive)
+code-stream-overlay · my-repo · maven (passive)
   Layout   http://127.0.0.1:4747/
   Widgets  http://127.0.0.1:4747/w/<now|timer|git|tests|goals|commits|file|agent|custom>
   Control  http://127.0.0.1:4747/control
 ```
 
-`stream-overlay init` walks you through the options: test trigger mode, goals, Claude Code hooks and OBS sources. `init --yes` accepts the defaults.
+`code-stream-overlay init` walks you through the options: test trigger mode, goals, Claude Code hooks and OBS sources. `init --yes` accepts the defaults.
 
 ## Commands
 
 | Command | What it does |
 |---------|--------------|
-| `stream-overlay` / `start` | Start the overlay server for this repo |
-| `init [--yes]` | Setup wizard; writes `.git/stream-overlay/config.json` (or the shared `stream-overlay.json`) |
+| `code-stream-overlay` / `start` | Start the overlay server for this repo |
+| `init [--yes]` | Setup wizard; writes `.git/code-stream-overlay/config.json` (or the shared `code-stream-overlay.json`) |
 | `pause` · `resume` · `next` · `stop` | Control the running session; `stop` ends it and saves the summary |
 | `test` | Trigger a test run |
 | `summary [--json]` | Current session, or the last saved one |
 | `hooks install` · `hooks uninstall` | Claude Code hooks |
 | `obs install` · `obs uninstall` | OBS browser sources |
-| `uninstall [--purge]` | Remove hooks and OBS sources; `--purge` also deletes `.git/stream-overlay/` |
+| `uninstall [--purge]` | Remove hooks and OBS sources; `--purge` also deletes `.git/code-stream-overlay/` |
 
 Global flags: `--port`, `--host`, `--config <path>`, `--theme`, `--tone`, `--tests-mode`, `--no-open`, `--verbose`, `--trust-repo-config`.
 
-Ending a session (with `stop`, Ctrl+C or SIGTERM) prints a Markdown summary covering time, phases, lines changed, commits, test runs, goals and agent activity. The JSON version is saved in `.git/stream-overlay/sessions/`.
+Ending a session (with `stop`, Ctrl+C or SIGTERM) prints a Markdown summary covering time, phases, lines changed, commits, test runs, goals and agent activity. The JSON version is saved in `.git/code-stream-overlay/sessions/`.
 
 The **control page** (`/control`) has Pause / Resume / Next phase / Run tests / End session buttons. Add it to OBS as a custom browser dock.
 
@@ -81,7 +81,7 @@ Tests are detected from your repo. The first match wins unless `tests.adapter` p
 | maven  | `pom.xml`                                          | `./mvnw -q test` or `mvn -q test`            | passive      |
 | gradle | `build.gradle(.kts)`, `settings.gradle(.kts)`      | `./gradlew test` or `gradle test`            | passive      |
 | node   | `package.json` with a `test` script                | `npm test` (pnpm / yarn / bun by lockfile)   | save         |
-| python | `pyproject.toml`, `pytest.ini`, `setup.cfg`, `tox.ini` | `pytest -q --junitxml=.git/stream-overlay/pytest.xml` | save |
+| python | `pyproject.toml`, `pytest.ini`, `setup.cfg`, `tox.ini` | `pytest -q --junitxml=.git/code-stream-overlay/pytest.xml` | save |
 | go     | `go.mod`                                           | `go test -json ./...`                        | save         |
 | rust   | `Cargo.toml`                                       | `cargo nextest run` if installed, else `cargo test` | save  |
 | dotnet | `*.sln`, `*.csproj`, `*.fsproj`                    | `dotnet test --logger trx …`                 | commit       |
@@ -93,7 +93,7 @@ Trigger modes (`tests.mode` or `--tests-mode`):
 - **save**: runs after you save a file (debounced; one follow-up run is queued at most).
 - **commit**: runs after each commit.
 - **interval**: runs every `tests.intervalSec` seconds (min 30).
-- **manual**: runs on `stream-overlay test` or `POST /api/tests/run`.
+- **manual**: runs on `code-stream-overlay test` or `POST /api/tests/run`.
 
 Override anything with `tests.command`, `tests.reports` (JUnit or TRX globs) and `tests.timeoutSec`. For example, jest with jest-junit:
 
@@ -103,7 +103,7 @@ Override anything with `tests.command`, `tests.reports` (JUnit or TRX globs) and
 
 ## Goals
 
-Put a task list in `GOALS.md` (or set `goals.file`; `.git/stream-overlay/goals.md` keeps it private):
+Put a task list in `GOALS.md` (or set `goals.file`; `.git/code-stream-overlay/goals.md` keeps it private):
 
 ```md
 # CSV export for orders
@@ -128,13 +128,13 @@ The first `#` heading becomes the title. Top-level items count toward progress, 
 ### Claude Code
 
 ```sh
-npm i -g stream-overlay        # a stable path for the hook
-stream-overlay hooks install   # merges hooks into .claude/settings.local.json
+npm i -g code-stream-overlay        # a stable path for the hook
+code-stream-overlay hooks install   # merges hooks into .claude/settings.local.json
 ```
 
 The agent widget then shows what Claude is doing ("Editing src/Order.java", "Running ./mvnw test", "Waiting for you"), with counters for edits, commands and reads. Its task list can feed the goals widget (`goals.source: "claude-todos"` or `"both"`).
 
-The hook is built to be invisible. It never prints, always exits 0, takes about 50 ms, and gives up after 300 ms if the overlay isn't running. File contents and tool output never leave the hook. Prompts are never shown unless `agent.showPrompts: true`. `stream-overlay hooks uninstall` restores your settings file.
+The hook is built to be invisible. It never prints, always exits 0, takes about 50 ms, and gives up after 300 ms if the overlay isn't running. File contents and tool output never leave the hook. Prompts are never shown unless `agent.showPrompts: true`. `code-stream-overlay hooks uninstall` restores your settings file.
 
 ### Any other agent
 
@@ -143,7 +143,7 @@ curl -X POST http://127.0.0.1:4747/api/agent -H "Authorization: Bearer $TOKEN" \
   -d '{"type":"action","text":"Refactoring parser","tool":"aider"}'
 ```
 
-Event types: `action` (`text`, `tool`), `thinking`, `waiting`, `done`, `todos` (`[{ "content": "...", "status": "in_progress" }]`). The token is in `.git/stream-overlay/server.json`.
+Event types: `action` (`text`, `tool`), `thinking`, `waiting`, `done`, `todos` (`[{ "content": "...", "status": "in_progress" }]`). The token is in `.git/code-stream-overlay/server.json`.
 
 ## OBS
 
@@ -152,13 +152,13 @@ Event types: `action` (`text`, `tool`), `thinking`, `waiting`, `done`, `todos` (
 OBS 28+ ships obs-websocket. Enable it under **Tools → WebSocket Server Settings**, then:
 
 ```sh
-stream-overlay obs install              # one browser source per widget, in the current scene
-stream-overlay obs install --single     # one full-canvas source for the composed layout
-stream-overlay obs install --scene Coding
-stream-overlay obs uninstall            # removes exactly the sources it created
+code-stream-overlay obs install              # one browser source per widget, in the current scene
+code-stream-overlay obs install --single     # one full-canvas source for the composed layout
+code-stream-overlay obs install --scene Coding
+code-stream-overlay obs uninstall            # removes exactly the sources it created
 ```
 
-Sources are named `so · <widget>` and positioned by their layout slot, scaled to your canvas. Running install again updates them without creating duplicates. The password is taken from `--obs-password`, then `STREAM_OVERLAY_OBS_PASSWORD`, then `obs.password` in `.git/stream-overlay/config.json`, and otherwise you're prompted.
+Sources are named `so · <widget>` and positioned by their layout slot, scaled to your canvas. Running install again updates them without creating duplicates. The password is taken from `--obs-password`, then `CODE_STREAM_OVERLAY_OBS_PASSWORD`, then `obs.password` in `.git/code-stream-overlay/config.json`, and otherwise you're prompted.
 
 Add the control page as a dock by hand: **View → Docks → Custom Browser Docks** → `http://127.0.0.1:4747/control`.
 
@@ -211,9 +211,9 @@ Example: `http://127.0.0.1:4747/w/tests?theme=neon&scale=1.5&label.tests.pass=Sh
 Settings are merged in layers, later ones winning. Objects merge deeply and arrays replace.
 
 1. Built-in defaults
-2. Global: `~/.config/stream-overlay/config.json` (`%APPDATA%\stream-overlay\config.json` on Windows)
-3. Shared repo file: `stream-overlay.json` (meant to be committed)
-4. Private repo file: `.git/stream-overlay/config.json`
+2. Global: `~/.config/code-stream-overlay/config.json` (`%APPDATA%\code-stream-overlay\config.json` on Windows)
+3. Shared repo file: `code-stream-overlay.json` (meant to be committed)
+4. Private repo file: `.git/code-stream-overlay/config.json`
 5. CLI flags
 6. URL params (display only, per browser source)
 
@@ -242,13 +242,13 @@ Unknown keys and wrong types are errors, and the message names the file and the 
 ## Security
 
 - The server binds to `127.0.0.1` by default. `--host 0.0.0.0` prints a warning and requires the token on every route, and the printed URLs include it.
-- Write routes (`POST /api/*`) always need the per-start token from `.git/stream-overlay/server.json`.
+- Write routes (`POST /api/*`) always need the per-start token from `.git/code-stream-overlay/server.json`.
 - Requests whose `Host` header isn't the server's own are rejected (DNS-rebinding guard). There are no CORS headers, and JSON bodies are capped at 64 KB.
 - The test command comes only from local config or the detected adapter, never from an HTTP request.
 
 ## Files it writes
 
-Everything lives in `.git/stream-overlay/` (server.json, private config, session summaries, `obs.json`, test reports for pytest and .NET). The only exception is `.claude/settings.local.json` after `hooks install`, a local file that is excluded from git automatically. The only tracked files it writes are `stream-overlay.json` and `GOALS.md`, and only if you choose them in `init`.
+Everything lives in `.git/code-stream-overlay/` (server.json, private config, session summaries, `obs.json`, test reports for pytest and .NET). The only exception is `.claude/settings.local.json` after `hooks install`, a local file that is excluded from git automatically. The only tracked files it writes are `code-stream-overlay.json` and `GOALS.md`, and only if you choose them in `init`.
 
 ## License
 

@@ -6,7 +6,7 @@ import { log } from "../util/log.js";
 import { repoOrExit, runningServer, type GlobalFlags } from "./common.js";
 import { uninstallHooks } from "./hooks.js";
 
-/** Remove hooks and OBS sources; --purge also deletes .git/stream-overlay/. */
+/** Remove hooks and OBS sources; --purge also deletes .git/code-stream-overlay/. */
 export async function uninstall(flags: GlobalFlags): Promise<void> {
   const repo = await repoOrExit();
   if (flags.purge && (await runningServer(repo))) {

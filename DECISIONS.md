@@ -32,7 +32,7 @@ One line per decision where the design doc was ambiguous or deviated from.
 - Reports count as fresh with a 2 s mtime slack, for filesystems with coarse timestamps.
 - The passive report watcher uses a segment glob matcher where `**` never descends into adapter ignore dirs, so it enters `target/surefire-reports` but not the rest of `target/`.
 - tests-green / tests-red compare against the last settled status (the transient `running` is ignored).
-- Manual runs (`POST /api/tests/run`, `stream-overlay test`) work in every trigger mode, passive included.
+- Manual runs (`POST /api/tests/run`, `code-stream-overlay test`) work in every trigger mode, passive included.
 - Fixtures come from real tool runs (Maven 3.9 + JUnit 5, Gradle, pytest, vitest, jest-junit, cargo-nextest, dotnet 10 + xUnit, go 1.27), scrubbed of local paths, hostnames and surefire `<properties>`.
 - A goals heading counts as stretch when its text starts with `goals.stretchHeading` (case-insensitive, any level). Stretch lasts until the next heading of the same or higher level.
 - Task lines inside code fences are ignored; plain bullets (without a checkbox) are not goals.
@@ -46,7 +46,7 @@ One line per decision where the design doc was ambiguous or deviated from.
 - Notification types other than permission/idle/elicitation/needs-input prompts (e.g. auth_success) don't change the agent status.
 - A Bash command is redacted first, then collapsed to one line and truncated to 60 chars, so a truncation can't expose half a secret.
 - Files outside the repo show as "a file outside the repo"; privacy-ignored files show as "a hidden file".
-- `hooks install` also adds `/.claude/settings.local.json` to `.git/info/exclude` when nothing ignores it yet, so `git status` stays clean; uninstall removes that line again. The install record lives in `.git/stream-overlay/hooks.json`.
+- `hooks install` also adds `/.claude/settings.local.json` to `.git/info/exclude` when nothing ignores it yet, so `git status` stays clean; uninstall removes that line again. The install record lives in `.git/code-stream-overlay/hooks.json`.
 - Uninstall restores the backup byte-for-byte when the remaining settings equal it; otherwise it writes the remaining settings with 2-space indentation.
 - Hook command paths use forward slashes on Windows, which work in both cmd and Git Bash.
 - ToolSearch shows as "Loading tools"; Task tools and TodoWrite show as "Planning".
@@ -68,6 +68,8 @@ One line per decision where the design doc was ambiguous or deviated from.
 - The commits bar spans the full stage width.
 - `/control` embeds the write token in a meta tag when bound to loopback, so its buttons work; it is same-origin only (Host check, no CORS). Off loopback the page reuses its `?token=`.
 - The session summary is saved per session id; `summary` shows the running server's live summary, otherwise the newest saved file.
-- `init --yes` writes the private config, installs Claude Code hooks only if `claude` is on PATH, and skips OBS. A starter goals file goes to `.git/stream-overlay/goals.md` unless GOALS.md is chosen.
+- `init --yes` writes the private config, installs Claude Code hooks only if `claude` is on PATH, and skips OBS. A starter goals file goes to `.git/code-stream-overlay/goals.md` unless GOALS.md is chosen.
 - `uninstall --purge` refuses while a server runs, and keeps the state dir if OBS sources couldn't be removed.
 - CI runs lint, build, tests, the packed-tarball smoke test (`scripts/smoke.mjs`) and `npm publish --dry-run` on Linux, macOS and Windows with Node 22.
+- Published as `code-stream-overlay` (the npm name `stream-overlay` belongs to an unrelated package). The command, state dir (`.git/code-stream-overlay/`), shared config file and env var prefix (`CODE_STREAM_OVERLAY_`) all follow `PKG_NAME`.
+- Hooks count as ours if the command mentions the package name or a CLI path recorded at install time (`hooks.json`), so a dev checkout in a differently named folder can still uninstall its hooks.

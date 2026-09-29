@@ -47,7 +47,7 @@ describe("CLI end to end", () => {
   beforeAll(() => {
     execFileSync("npm", ["run", "build"], { cwd: ROOT, stdio: "ignore", shell: process.platform === "win32" });
     dir = tmpRepo();
-    write(dir, ".git/stream-overlay/config.json", JSON.stringify({ port: 0, goals: { source: "off" } }));
+    write(dir, ".git/code-stream-overlay/config.json", JSON.stringify({ port: 0, goals: { source: "off" } }));
   }, 60_000);
 
   afterAll(() => {
@@ -82,12 +82,12 @@ describe("CLI end to end", () => {
 
   it("stop ends the session and saves the summary; SIGTERM shuts down cleanly", async () => {
     expect((await run(dir, "stop")).out).toContain("session stopped");
-    await waitFor(() => existsSync(path.join(dir, ".git", "stream-overlay", "sessions")));
+    await waitFor(() => existsSync(path.join(dir, ".git", "code-stream-overlay", "sessions")));
     expect(banner).toContain("## Session summary");
     server!.kill("SIGTERM");
     await waitFor(() => server!.exitCode !== null, 5000);
-    expect(existsSync(path.join(dir, ".git", "stream-overlay", "server.json"))).toBe(false);
-    expect(readdirSync(path.join(dir, ".git", "stream-overlay", "sessions"))).toHaveLength(1);
+    expect(existsSync(path.join(dir, ".git", "code-stream-overlay", "server.json"))).toBe(false);
+    expect(readdirSync(path.join(dir, ".git", "code-stream-overlay", "sessions"))).toHaveLength(1);
     const last = await run(dir, "summary");
     expect(last.out).toContain("## Session summary");
   });
@@ -95,26 +95,26 @@ describe("CLI end to end", () => {
   it("commands that need a server explain when none runs", async () => {
     const r = await run(dir, "pause");
     expect(r.code).toBe(1);
-    expect(r.out).toContain("no stream-overlay server is running");
+    expect(r.out).toContain("no code-stream-overlay server is running");
   });
 
   it("init --yes writes private config; uninstall --purge cleans up", async () => {
     write(dir, "package.json", JSON.stringify({ scripts: { test: "vitest run" } }));
     const r = await run(dir, "init", "--yes");
     expect(r.code).toBe(0);
-    const cfg = JSON.parse(readFileSync(path.join(dir, ".git", "stream-overlay", "config.json"), "utf8"));
+    const cfg = JSON.parse(readFileSync(path.join(dir, ".git", "code-stream-overlay", "config.json"), "utf8"));
     expect(cfg.port).toBe(0);
     expect(r.out).toContain("Test command: npm test");
     const u = await run(dir, "uninstall", "--purge");
     expect(u.code).toBe(0);
-    expect(existsSync(path.join(dir, ".git", "stream-overlay"))).toBe(false);
+    expect(existsSync(path.join(dir, ".git", "code-stream-overlay"))).toBe(false);
     expect(existsSync(path.join(dir, ".claude"))).toBe(false);
   });
 
   it("outside a repo and with bad config: clear errors", async () => {
     const r = await run(path.parse(dir).root, "pause");
     expect(r.out).toContain("not inside a git repository");
-    write(dir, "stream-overlay.json", '{ "tests": { "timeoutSec": "soon" } }');
+    write(dir, "code-stream-overlay.json", '{ "tests": { "timeoutSec": "soon" } }');
     const bad = await run(dir, "--no-open");
     expect(bad.code).toBe(1);
     expect(bad.out).toContain("tests.timeoutSec");

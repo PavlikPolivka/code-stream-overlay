@@ -19,6 +19,8 @@ interface InstallRecord {
   createdDir: boolean;
   /** We added a line to .git/info/exclude. */
   addedExclude: boolean;
+  /** CLI paths hooks were installed from, to recognize them on uninstall. */
+  cliPaths?: string[];
 }
 
 const recordPath = (repo: RepoPaths) => path.join(repo.stateDir, "hooks.json");
@@ -71,15 +73,16 @@ export async function installHooks(repo: RepoPaths, opts: { cliPath?: string; no
   const file = path.join(repo.root, SETTINGS_REL);
   const { data, existed } = readSettings(file);
   const prevRecord = readRecord(repo);
+  const cliPaths = [...new Set([...(prevRecord?.cliPaths ?? []), cliPath, currentCliPath()])];
   const dirExisted = existsSync(path.dirname(file));
 
   mkdirSync(repo.stateDir, { recursive: true });
   const bak = path.join(repo.stateDir, "settings.local.json.bak");
-  if (existed && !existsSync(bak) && !hasOurHooks(data)) copyFileSync(file, bak);
+  if (existed && !existsSync(bak) && !hasOurHooks(data, cliPaths)) copyFileSync(file, bak);
 
   const command = hookCommand(opts.nodePath ?? process.execPath, cliPath);
   mkdirSync(path.dirname(file), { recursive: true });
-  writeFileSync(file, serialize(addHooks(data, command)));
+  writeFileSync(file, serialize(addHooks(data, command, cliPaths)));
 
   // Keep `git status` clean: ignore the local settings file via .git/info/exclude if nothing else does.
   let addedExclude = prevRecord?.addedExclude ?? false;
@@ -95,6 +98,7 @@ export async function installHooks(repo: RepoPaths, opts: { cliPath?: string; no
     createdFile: prevRecord ? prevRecord.createdFile : !existed,
     createdDir: prevRecord ? prevRecord.createdDir : !dirExisted,
     addedExclude,
+    cliPaths,
   };
   writeFileSync(recordPath(repo), JSON.stringify(record, null, 2));
 
@@ -111,9 +115,10 @@ export async function uninstallHooks(repo: RepoPaths, opts: { quiet?: boolean } 
   const file = path.join(repo.root, SETTINGS_REL);
   const record = readRecord(repo);
   const { data, existed } = readSettings(file);
+  const cliPaths = [...(record?.cliPaths ?? []), currentCliPath()];
   let changed = false;
-  if (existed && hasOurHooks(data)) {
-    const next = removeHooks(data);
+  if (existed && hasOurHooks(data, cliPaths)) {
+    const next = removeHooks(data, cliPaths);
     const bak = path.join(repo.stateDir, "settings.local.json.bak");
     if (!Object.keys(next).length && record?.createdFile !== false) rmSync(file);
     else if (existsSync(bak) && isDeepStrictEqual(next, readSettings(bak).data)) copyFileSync(bak, file); // byte-for-byte
@@ -146,7 +151,7 @@ export async function uninstallHooks(repo: RepoPaths, opts: { quiet?: boolean } 
 
 export function hooksInstalled(repo: RepoPaths): boolean {
   try {
-    return hasOurHooks(readSettings(path.join(repo.root, SETTINGS_REL)).data);
+    return hasOurHooks(readSettings(path.join(repo.root, SETTINGS_REL)).data, [...(readRecord(repo)?.cliPaths ?? []), currentCliPath()]);
   } catch {
     return false;
   }

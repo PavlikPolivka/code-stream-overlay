@@ -160,7 +160,7 @@ describe("install / uninstall", () => {
   });
 });
 
-describe("stream-overlay obs install (CLI)", () => {
+describe("code-stream-overlay obs install (CLI)", () => {
   it("installs and uninstalls through the built CLI, password from env", async () => {
     const { execFileSync, execFile } = await import("node:child_process");
     const { mkdirSync, writeFileSync } = await import("node:fs");
@@ -170,11 +170,11 @@ describe("stream-overlay obs install (CLI)", () => {
     const m = await mock({ password: "pw" });
     const repo = tmpRepo();
     dirs.push(repo);
-    mkdirSync(path.join(repo, ".git", "stream-overlay"), { recursive: true });
-    writeFileSync(path.join(repo, ".git", "stream-overlay", "config.json"), JSON.stringify({ obs: { port: m.port } }));
+    mkdirSync(path.join(repo, ".git", "code-stream-overlay"), { recursive: true });
+    writeFileSync(path.join(repo, ".git", "code-stream-overlay", "config.json"), JSON.stringify({ obs: { port: m.port } }));
     const run = (...args: string[]) =>
       new Promise<{ code: number | null; out: string }>((resolve) => {
-        execFile(process.execPath, [path.join(root, "dist", "cli.js"), ...args], { cwd: repo, env: { ...process.env, STREAM_OVERLAY_OBS_PASSWORD: "pw" } }, (err, stdout, stderr) =>
+        execFile(process.execPath, [path.join(root, "dist", "cli.js"), ...args], { cwd: repo, env: { ...process.env, CODE_STREAM_OVERLAY_OBS_PASSWORD: "pw" } }, (err, stdout, stderr) =>
           resolve({ code: err ? ((err as { code?: number }).code ?? 1) : 0, out: stdout + stderr }),
         );
       });

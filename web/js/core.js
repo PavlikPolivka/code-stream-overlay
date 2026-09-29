@@ -1,4 +1,4 @@
-// stream-overlay browser runtime: SSE client, state, URL params, i18n, shared clock.
+// code-stream-overlay browser runtime: SSE client, state, URL params, i18n, shared clock.
 // Exposes window.so for widgets (including user-written custom widgets).
 
 const params = new URLSearchParams(location.search);

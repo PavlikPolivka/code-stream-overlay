@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
+import { ENV_PREFIX } from "../constants.js";
 
 /** obs-websocket v5 opcodes. */
 const OP = { Hello: 0, Identify: 1, Identified: 2, Request: 6, RequestResponse: 7 } as const;
@@ -107,7 +108,7 @@ export class ObsClient {
           const auth = msg.d.authentication as { challenge: string; salt: string } | undefined;
           if (auth) {
             const pw = await o.password?.();
-            if (!pw) return fail(new ObsError("OBS asks for a password: pass --obs-password or set STREAM_OVERLAY_OBS_PASSWORD."));
+            if (!pw) return fail(new ObsError(`OBS asks for a password: pass --obs-password or set ${ENV_PREFIX}_OBS_PASSWORD.`));
             d.authentication = authString(pw, auth.salt, auth.challenge);
           }
           ws.send(JSON.stringify({ op: OP.Identify, d }));

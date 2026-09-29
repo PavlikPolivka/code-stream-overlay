@@ -45,10 +45,10 @@ describe("repo awareness", () => {
     const dir = repo();
     const { app } = await boot(dir);
     expect(sh(dir, "status", "--porcelain")).toBe("");
-    expect(existsSync(path.join(dir, ".git", "stream-overlay", "server.json"))).toBe(true);
+    expect(existsSync(path.join(dir, ".git", "code-stream-overlay", "server.json"))).toBe(true);
     await waitFor(() => app.store.get("git").branch === "main");
     await app.stop();
-    expect(existsSync(path.join(dir, ".git", "stream-overlay", "server.json"))).toBe(false);
+    expect(existsSync(path.join(dir, ".git", "code-stream-overlay", "server.json"))).toBe(false);
   });
 
   it("an edit updates activity and git within 1.5 s", async () => {

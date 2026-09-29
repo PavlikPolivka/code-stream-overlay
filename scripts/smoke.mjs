@@ -27,12 +27,12 @@ const git = (...a) => execFileSync("git", a, { cwd: repo, encoding: "utf8" });
 git("init", "-q");
 git("-c", "user.email=ci@example.com", "-c", "user.name=CI", "add", ".");
 git("-c", "user.email=ci@example.com", "-c", "user.name=CI", "commit", "-q", "-m", "init");
-mkdirSync(path.join(repo, ".git", "stream-overlay"), { recursive: true });
-writeFileSync(path.join(repo, ".git", "stream-overlay", "config.json"), JSON.stringify({ port: 0 }));
+mkdirSync(path.join(repo, ".git", "code-stream-overlay"), { recursive: true });
+writeFileSync(path.join(repo, ".git", "code-stream-overlay", "config.json"), JSON.stringify({ port: 0 }));
 
 // Install once so the timed start measures startup, not the download.
 execFileSync(npm, ["install", "--no-save", "--prefix", path.join(work, "prefix"), tgz], { stdio: "ignore", shell: win });
-const bin = path.join(work, "prefix", "node_modules", "stream-overlay", "dist", "cli.js");
+const bin = path.join(work, "prefix", "node_modules", "code-stream-overlay", "dist", "cli.js");
 
 const t0 = Date.now();
 const child = spawn(process.execPath, [bin, "--no-open"], { cwd: repo, env: { ...process.env, CI: "1" } });
@@ -70,7 +70,7 @@ try {
   );
   const status = git("status", "--porcelain");
   if (status) fail(`working tree not clean:\n${status}`);
-  const npxOut = execFileSync(npx, ["--yes", "--package", tgz, "stream-overlay", "--version"], { cwd: repo, encoding: "utf8", shell: win });
+  const npxOut = execFileSync(npx, ["--yes", "--package", tgz, "code-stream-overlay", "--version"], { cwd: repo, encoding: "utf8", shell: win });
   if (!npxOut.includes(JSON.parse(readFileSync(path.join(root, "package.json"), "utf8")).version)) fail(`npx --version printed: ${npxOut}`);
   console.log("SMOKE OK");
 } finally {

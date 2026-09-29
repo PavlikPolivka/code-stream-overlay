@@ -191,8 +191,8 @@ describe("hook command", () => {
   it("with a stale server.json (dead port): still fast and silent", async () => {
     await app?.stop();
     app = undefined;
-    mkdirSync(path.join(dir, ".git", "stream-overlay"), { recursive: true });
-    writeFileSync(path.join(dir, ".git", "stream-overlay", "server.json"), JSON.stringify({ port: 1, token: "x" }));
+    mkdirSync(path.join(dir, ".git", "code-stream-overlay"), { recursive: true });
+    writeFileSync(path.join(dir, ".git", "code-stream-overlay", "server.json"), JSON.stringify({ port: 1, token: "x" }));
     const r = await runHook({ hook_event_name: "Stop", cwd: dir });
     expect(r).toMatchObject({ code: 0, stdout: "", stderr: "" });
     expect(r.ms).toBeLessThan(1500);
@@ -200,15 +200,19 @@ describe("hook command", () => {
 });
 
 describe("settings merge", () => {
-  const CMD = hookCommand("/usr/bin/node", "/opt/lib/node_modules/stream-overlay/dist/cli.js", "linux");
+  const CMD = hookCommand("/usr/bin/node", "/opt/lib/node_modules/code-stream-overlay/dist/cli.js", "linux");
 
   it("builds a quoted command; Windows paths use forward slashes", () => {
-    expect(CMD).toBe('"/usr/bin/node" "/opt/lib/node_modules/stream-overlay/dist/cli.js" hook');
-    expect(hookCommand("C:\\node\\node.exe", "C:\\x\\stream-overlay\\dist\\cli.js", "win32")).toBe(
-      '"C:/node/node.exe" "C:/x/stream-overlay/dist/cli.js" hook',
+    expect(CMD).toBe('"/usr/bin/node" "/opt/lib/node_modules/code-stream-overlay/dist/cli.js" hook');
+    expect(hookCommand("C:\\node\\node.exe", "C:\\x\\code-stream-overlay\\dist\\cli.js", "win32")).toBe(
+      '"C:/node/node.exe" "C:/x/code-stream-overlay/dist/cli.js" hook',
     );
     expect(isOurs({ type: "command", command: CMD })).toBe(true);
     expect(isOurs({ type: "command", command: "other-tool hook" })).toBe(false);
+    // A dev checkout in a folder without the package name is recognized by its CLI path.
+    const dev = hookCommand("/usr/bin/node", "/home/me/src/overlay/dist/cli.js", "linux");
+    expect(isOurs({ type: "command", command: dev })).toBe(false);
+    expect(isOurs({ type: "command", command: dev }, ["/home/me/src/overlay/dist/cli.js"])).toBe(true);
   });
 
   it("preserves existing keys and hooks; is idempotent", () => {
@@ -238,7 +242,7 @@ describe("settings merge", () => {
 describe("hooks install/uninstall on disk", () => {
   const dirs: string[] = [];
   afterEach(() => dirs.splice(0).forEach(rm));
-  const CLI = "/opt/lib/node_modules/stream-overlay/dist/cli.js";
+  const CLI = "/opt/lib/node_modules/code-stream-overlay/dist/cli.js";
 
   async function repo() {
     const d = tmpRepo();

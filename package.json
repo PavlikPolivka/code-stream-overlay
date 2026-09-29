@@ -21,7 +21,9 @@
     "lint": "tsc --noEmit",
     "test": "vitest run",
     "prepack": "npm run build",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node scripts/smoke.mjs",
+    "version": "node scripts/sync-version.mjs && git add src/constants.ts",
+    "prepublishOnly": "npm run lint && npm test"
   },
   "dependencies": {
     "chokidar": "^4.0.3",
